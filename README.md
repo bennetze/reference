@@ -1,100 +1,118 @@
-# Die Oldtimermanufaktur
+# Die Oldtimermanufaktur — website showcase
 
-Static Astro website. Public content is German and English. This is still a
-development preview, not an approved production release.
+A bilingual Astro website-design reference for prospective clients. It demonstrates
+an immersive editorial site with local photography, background video and accessible
+navigation. It remains a labelled development preview, not an approved production release.
 
-## Development and verification
+## Pages and design
 
-Use Node >=22.12.0 and npm 11.18.0. Install the reviewed lockfile reproducibly:
+The homepage, Handwerk, Über uns and Projekte overview are retained in German and
+English. Projekte is a three-photograph composition with inactive panels; there are
+no vehicle archives, detail pages, galleries or internal-editor dependencies.
+Impressum and Datenschutz contain only their headings and shared header/footer.
+Both legal pages and the custom 404 remain noindex.
+
+All typography uses locally hosted variable Jost. Moderate-weight display headings and
+larger 18–22px body copy establish the hierarchy. The original
+SVG vehicle mark sits above the company name in the blurred header (112px desktop,
+88px mobile). Editorial section gaps provide measured breathing room while preserving parallax clearance.
+Editorial and legal pages use the restored white/cream/blue gradient;
+there is no leather texture or grain. Homepage photographic overlays are preserved.
+
+`src/pages/` owns routes, `src/layouts/` owns shared documents/editorial structure,
+and `src/components/` owns site chrome, section navigation and motion media.
+Imported media lives in `src/assets/oldtimer/`; static crawler files, favicons,
+Apache configuration and licenses live in `public/`.
+
+## Development and checks
+
+Use Node >=22.12.0 and npm >=11.18.0. Install from the reviewed lockfile:
 
 ```sh
 npm ci
 npm run dev
-npm run test:site
 npm test
+npm run crawlers:check
 npm run build
 npm run build:pages
-npm run security:check
 ```
 
-`security:check` audits all dependency types and checks registry signatures.
-Network access to npm is required. A clean audit only covers currently known
-advisories; signatures do not guarantee that package code is safe. Use
-`npm outdated --all` when reviewing updates. Keep transitive versions within their
-parents' constraints; do not use forced audit fixes. Deprecated `whatwg-encoding`
-remains required by Cheerio's encoding helper.
+`npm run test:site` is an alias for npm test. Builds verify CSP hashes, IDs, local
+links, image dimensions, metadata dates, language coverage, motion controls,
+accessibility invariants and deployment artifacts. These checks are not a WCAG
+certification or live-host verification. For UI changes, check desktop/mobile and
+both languages against built output as well as dev. Astro CSP is inactive in dev.
 
-`.npmrc` enforces version-specific install-script approvals in `package.json`.
-Review changed lifecycle scripts before approving another version. Do not disable
-the policy to make installation pass. The package is private to prevent publishing.
-
-Offline-editor contract tests require the sibling `../oldtimer-intern` checkout.
-If absent, those suites fail explicitly; do not skip or remove them. `npm run
-test:site` runs website tests and discovery without loading those companion suites.
-
-Builds check metadata, links, bilingual content, CSP, deployment artifacts and static
-accessibility invariants. The evidence, unresolved content findings and browser/AT
-verification matrix are in [ACCESSIBILITY-AUDIT.md](ACCESSIBILITY-AUDIT.md).
-`npm run audit:accessibility` scans existing built output;
-`npm run preview:accessibility` serves local compatibility/spacing fixtures.
-These checks do not establish WCAG conformance or universal compatibility.
-Keep credentials, photo backups, tooling, dependencies and source maps out of
-`public/`. The artifact gate rejects common leaked files, credential patterns and
-server executables; it is not a complete secret scanner.
-
-The old `vehicles:import` migration command is disabled. Its extraction code is
-retained as a non-executable historical reference. Use `vehicles:review` and the
-checked approval-token workflow for imports; never rerun the historical migration.
-
-## Assets
-
-All real photographs, including unused photos, are retained. Original-photo
-backups under `.cache/image-originals/` must not be removed as ordinary cache.
-Current gallery derivatives use `.cache/vehicle-gallery-v3/` and are reproducible.
-The internal manifests record source and derivative hashes, encoding settings and
-image dimensions. Builds verify cached and published bytes before reuse and replace
-changed files atomically. Original 1600px-or-smaller URLs remain stable. Production HTML uses SHA-256 delivery aliases for immutable caching; GitHub Pages keeps stable delivery URLs to preserve its artifact budget. Cards also
-have 480px/960px variants; production details have an 800px variant where useful.
-GitHub Pages details retain their existing sizes and gallery limit.
-After editing source images during a running dev session, run `npm run vehicles:gallery`
-to refresh derivatives; the development metadata cache notices the changed manifest.
-Vehicle collections are cached only in production builds.
-
-WOFF2 fonts use Unicode-range subsets of retained TTF masters, with complete original
-glyph coverage and variable axes across the subsets. FontTools 4.66.0 with WOFF dependencies generated
-them using `scripts/subset-fonts.py` (including coverage and metrics checks). No runtime font conversion or
-external font service is involved. Preserve the published licenses.
-
-## Hosting and release
-
-`npm run build` targets `https://www.oldtimermanufaktur.de/`.
-`npm run build:pages` targets the `/oldtimer/` GitHub Pages base and preserves preview
-noindex behavior. Deploy only generated `dist/`, never the repository root.
+Additional commands:
 
 ```sh
-# Publishes only when explicitly requested:
+npm run preview
+npm run security:check
+npm run audit:accessibility
+npm run preview:accessibility
+npm run audit:performance
+```
+
+The performance audit is local-only. Browser QA scripts use an optional Playwright
+runtime through `PLAYWRIGHT_MODULE`; they are not application dependencies.
+`node scripts/test-showcase.mjs` checks retained subpages;
+`node scripts/test-homepage-layout.mjs` checks homepage widths and keyboard navigation.
+Set `SITE_URL` to the actual local server URL and `BROWSERS` to available engines.
+Security checks require npm network access and audit dependencies plus registry
+signatures. Preserve version-specific install-script approvals in `.npmrc` and
+package.json. Never use forced audit fixes or disable those approvals.
+
+## German and English
+
+`src/i18n/routes.mjs` registers English URLs under `/en/` using the same templates.
+Middleware translates site text through `src/i18n/en.json`, localizes navigation and
+metadata, and updates inline-script CSP hashes. Both languages are static HTML and
+remain readable without JavaScript; assets and interactions are shared.
+
+Browser language detection selects German for a first `de-*` preference and English
+otherwise. DE/EN links explicitly choose `?lang=de` or `?lang=en`; that choice follows
+internal navigation while preserving other query parameters and fragments. The
+script does not use cookies, localStorage, sessionStorage or a translation service.
+A bare German URL detects language again. English 404 handling avoids redirect loops.
+
+## Fonts and media
+
+The supplied Jost master is `src/assets/fonts/jost-variable.ttf`; the site serves
+its WOFF2 derivative locally. Regenerate it with:
+
+```sh
+python -m pip install 'fonttools[woff]==4.66.0'
+python scripts/generate-fonts.py
+```
+
+Generation preserves all glyphs, metrics and the 100–900 weight axis. The Jost
+copyright and SIL Open Font License are in `public/licenses/Jost-OFL-1.1.txt`.
+Other retained third-party assets keep their license files. No external font service
+is used. `npm run encode-video -- input-video.mov output-base-name` provides the
+existing MP4/WebM and animated-fallback workflow for future local media.
+
+## Crawler files and hosting
+
+`npm run build` uses `https://www.oldtimermanufaktur.de/` and a root base.
+`npm run build:pages` uses `https://bennetze.github.io/oldtimer/` and keeps preview
+noindex behavior. Internal paths must respect `import.meta.env.BASE_URL`.
+
+After route or reviewed-date changes, explicitly run `npm run crawlers:sync` and
+review public/sitemap.xml. Only the four retained indexable pages and their English
+versions belong in the sitemap. Manually update the German llms.txt summary whenever
+the website changes and review robots.txt alongside it. Build validation never
+rewrites approved source wording or uses the build clock as a modification date.
+
+Deploy only generated dist. Apache `.htaccess` provides security headers,
+compression, asset caching and `ErrorDocument 404 /404.html`; GitHub Pages ignores
+Apache directives. Validate actual headers, MIME types and error responses on the
+intended host before release. Do not publish repository files or credentials.
+
+```sh
+# Only when explicitly requested: builds and publishes to gh-pages.
 npm run deploy
 ```
 
-This builds and publishes `dist/` to the `gh-pages` branch. GitHub Pages must use
-that branch's root. Builds and security checks do not deploy on their own.
-
-Apache `.htaccess` provides security headers, text compression, one-year immutable
-caching for hashed `_astro` assets, and revalidation for HTML and stable gallery
-URLs. GitHub Pages ignores these directives. Validate real headers, MIME types,
-compression, redirects and error responses on the final host before release.
-The localized page CSP is placed immediately after the charset, before scripts
-and resource links. Keep the Apache header CSP and hashed page CSP together; removing inline allowances
-from the header without accounting for inline scripts would break the website.
-
-The production domain still served Joomla/K2 during the 2026-09-28 audit. A future
-approved release must retire or isolate the old PHP application, not leave its
-executables behind the static site. Repository cleanup does not secure that server.
-Complete factual, media-rights and legal approval before disabling preview flags.
-
-See [WEBSITE-REPAIR-AUDIT.md](WEBSITE-REPAIR-AUDIT.md) for the repair register and verification limits.
-
-## Performance
-
-See [PERFORMANCE-AUDIT.md](PERFORMANCE-AUDIT.md) for the local cold/warm browser audit,
-responsive media generation, cache behavior and acceptance checks.
+The showcase's empty legal pages and preview labels do not approve public release.
+Keep preview safeguards until factual copy, rights to published media, approved legal
+texts and actual business/hosting details are confirmed and release checks pass.

@@ -1,15 +1,13 @@
-import { watchMedia } from './accessibility.js';
-const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+import { getSiteMotion } from './siteMotion.js';
+const motion = getSiteMotion();
 
 function initMotionPanel(panel) {
 	const video = panel.querySelector('[data-motion-video]');
 	const picture = panel.querySelector('[data-motion-fallback]');
 	const image = panel.querySelector('[data-motion-image]');
-	const toggle = panel.querySelector('[data-motion-toggle]');
 	if (!(video instanceof HTMLVideoElement) || !(image instanceof HTMLImageElement) || !picture) return;
 
-	let userPaused = motionPreference.matches;
-	let manualPaused;
+	let userPaused = !motion.enabled;
 	let inViewport = false;
 	let autoplayBlocked = false;
 	let fallbackActive = false;
@@ -25,12 +23,6 @@ function initMotionPanel(panel) {
 	const mobileSource = video.querySelectorAll('source[data-motion-src]')[0]?.dataset.motionMobileSrc;
 	const clearHealth = () => { window.clearTimeout(healthTimer); healthTimer = undefined; qualitySample = undefined; };
 	const canAnimate = () => !userPaused && inViewport && !document.hidden;
-	const updateToggle = () => {
-		toggle?.classList.toggle('is-paused', userPaused);
-		toggle?.setAttribute('aria-label', document.documentElement.lang === 'en'
-			? (userPaused ? 'Play animation' : 'Pause animation')
-			: (userPaused ? 'Animation abspielen' : 'Animation pausieren'));
-	};
 	const posterSource = picture.querySelector('[data-motion-poster-source]');
 	const showPoster = () => {
 		if (posterSource) posterSource.media = '';
@@ -75,8 +67,8 @@ function initMotionPanel(panel) {
 		timer = undefined;
 		video.autoplay = false;
 		video.pause();
-		if (fallbackActive) showPoster();
-		updateToggle();
+		if (fallbackActive || userPaused) showPoster();
+		if (userPaused) panel.classList.remove('is-video-ready', 'is-motion-fallback');
 	};
 	const ready = () => {
 		if (!canAnimate()) { suspend(); return; }
@@ -89,11 +81,9 @@ function initMotionPanel(panel) {
 		panel.classList.add('is-video-ready');
 		panel.classList.remove('is-motion-fallback');
 		monitorQuality();
-		updateToggle();
 	};
 	const play = ({ userGesture = false } = {}) => {
 		if (!canAnimate()) return;
-		updateToggle();
 		if ((autoplayBlocked || fallbackActive) && !userGesture) { showFallback(); return; }
 		if (playPending || (!video.paused && panel.classList.contains('is-video-ready'))) return;
 		fallbackActive = false;
@@ -183,23 +173,13 @@ function initMotionPanel(panel) {
 		autoplayBlocked = true;
 		showFallback();
 	});
-	toggle?.addEventListener('click', () => {
-		userPaused = !userPaused;
-		manualPaused = userPaused;
+	motion.subscribe(({ enabled, userGesture }) => {
+		userPaused = !enabled;
 		if (userPaused) suspend();
-		else play({ userGesture: true });
-		updateToggle();
-	});
-	watchMedia(motionPreference, () => {
-		userPaused = motionPreference.matches || manualPaused === true;
-		if (userPaused) suspend();
-		else play();
-		updateToggle();
+		else play({ userGesture });
 	});
 	video.autoplay = false;
 	video.pause();
-	updateToggle();
-	if (toggle instanceof HTMLElement) toggle.hidden = false;
 	if ('IntersectionObserver' in window) {
 		new IntersectionObserver(([entry]) => {
 			inViewport = entry.isIntersecting && entry.intersectionRatio > 0.5;
@@ -220,7 +200,7 @@ function initMotionPanel(panel) {
 	}
 	document.addEventListener('visibilitychange', () => document.hidden ? suspend() : play());
 	window.addEventListener('pagehide', suspend);
-	window.addEventListener('pageshow', () => { updateToggle(); play(); });
+	window.addEventListener('pageshow', () => { play(); });
 	['pointerdown', 'keydown', 'touchstart'].forEach((eventName) => {
 		window.addEventListener(eventName, () => play({ userGesture: true }), { once: true, passive: true });
 	});

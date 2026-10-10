@@ -52,7 +52,7 @@ function harness() {
 	let observe;
 	class Observer { constructor(callback) { observe = callback; } observe() {} }
 	window.IntersectionObserver = Observer;
-	vm.runInNewContext(source, { watchMedia, setIsolated, systemPointerPreference, HTMLInputElement: Element, document, window, Element, HTMLElement: Element, IntersectionObserver: Observer });
+	vm.runInNewContext(source, { getSiteMotion: () => ({ enabled: true, subscribe() {} }), watchMedia, setIsolated, systemPointerPreference, HTMLInputElement: Element, document, window, Element, HTMLElement: Element, IntersectionObserver: Observer });
 	const key = code => { const event = { code, target: new Element(), defaultPrevented: false, preventDefault() { this.defaultPrevented = true; } }; window.emit('keydown', event); return event; };
 	const flush = () => { const pending = [...frames.values()]; frames.clear(); pending.forEach(callback => callback(2000)); };
 	return { document, click: index => controls[index].emit('click', { preventDefault() {} }), window, preference, sections, controls, key, frames, flush, menuToggle, observe: entries => observe(entries) };

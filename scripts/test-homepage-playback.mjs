@@ -44,11 +44,11 @@ function instrument(scenario) {
 		const hero = panels[0].querySelector('video');
 		if (scenario === 'reduce') {
 			check('Reduced motion starts paused without fetching video', hero.paused && !hero.currentSrc);
-			panels[0].querySelector('[data-motion-toggle]').click();
+			document.querySelector('[data-site-motion]').click();
 		} else if (scenario === 'blocked') {
 			samples.push({ section: 'blocked-startup', paused: hero.paused, src: hero.currentSrc, classes: panels[0].className, hidden: document.hidden });
 			check('Blocked video uses fallback with decoder paused', hero.paused && panels[0].classList.contains('is-motion-fallback'));
-			panels[0].querySelector('[data-motion-toggle]').click();
+			document.querySelector('[data-site-motion]').click();
 			await wait(100);
 			check('Pause restores a still fallback', !panels[0].querySelector('[data-motion-generated-source]'));
 		}
@@ -56,7 +56,6 @@ function instrument(scenario) {
 			for (const panel of panels) {
 				panel.scrollIntoView({ behavior: 'instant' });
 				const video = panel.querySelector('video');
-				if (scenario === 'reduce' && panel !== panels[0]) panel.querySelector('[data-motion-toggle]').click();
 				await wait(1000);
 				const quality = video.getVideoPlaybackQuality?.();
 				let frames = 0, callback;
@@ -69,7 +68,7 @@ function instrument(scenario) {
 				samples.push({ section: panel.id, src: video.currentSrc, width: video.videoWidth, fps: callback === undefined ? null : frames * 1000 / (performance.now() - start), dropped: final && quality ? final.droppedVideoFrames - quality.droppedVideoFrames : null, currentTime: video.currentTime });
 				check(panel.id + ' plays muted and looping', !video.paused && video.muted && video.loop && panel.classList.contains('is-video-ready'));
 				check(panel.id + ' is the only playing decoder', panels.every(other => other === panel || other.querySelector('video').paused));
-				const toggle = panel.querySelector('[data-motion-toggle]');
+				const toggle = document.querySelector('[data-site-motion]');
 				toggle.click(); await wait(150);
 				check(panel.id + ' pauses manually', video.paused);
 				toggle.click(); await wait(150);
@@ -86,7 +85,7 @@ function instrument(scenario) {
 }
 createServer(async (req, res) => {
 	try {
-		const url = new URL(req.url, `http://localhost:${port}`);
+		const url = new URL(req.url, `http://${req.headers.host || `localhost:${port}`}`);
 		if (url.pathname === '/__playback/result' && req.method === 'POST') {
 			if (req.headers.origin !== url.origin) { res.writeHead(403); res.end(); return; }
 			let body = ''; for await (const chunk of req) { body += chunk; if (body.length > 100000) throw new Error('Oversized result'); }

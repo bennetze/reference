@@ -1,22 +1,8 @@
 import test from 'node:test';
-import { load } from 'cheerio';
 import assert from 'node:assert/strict';
-import { validateVehicleHtml } from '../src/config/vehicleHtml.js';
 import { fragmentId } from '../src/config/fragments.js';
 import { pageModified } from '../src/config/modificationDates.js';
 import { sitemapEntries, renderSitemap, checkCrawlerFiles, productionOrigin } from '../scripts/lib/crawlers.mjs';
-
-test('vehicle HTML retains German copy, formatting and safe contact links', () => {
-	const html = '<p>Größe &amp; Qualität <strong>Original</strong><br /><a href="mailto:info@oldtimermanufaktur.de">E-Mail</a></p>';
-	assert.match(load(validateVehicleHtml(html)).text(), /Größe & Qualität/);
-	assert.match(validateVehicleHtml(html), /href="mailto:info@oldtimermanufaktur.de"/);
-});
-
-test('vehicle HTML rejects active content with useful context', () => {
-	for (const html of ['<script>alert(1)</script>', '<p onclick="alert(1)">Hi</p>', '<body onload="alert(1)">Hi</body>', '<iframe src="https://example.com"></iframe>', '<a href="java&#x73;cript:alert(1)">Hi</a>', '<a href="jav&#9;ascript:alert(1)">Hi</a>', '<a href="data:text/html,x">Hi</a>', '<a href="//example.com">Hi</a>', '<svg onload="alert(1)"></svg>', '<p style="color:red">Hi</p>']) {
-		assert.throws(() => validateVehicleHtml(html, 'vehicle/test, block 2'), /vehicle\/test, block 2:/);
-	}
-});
 
 test('fragment lookup handles encoded, malformed and selector-like IDs safely', () => {
 	assert.equal(fragmentId('#über-uns'), 'über-uns');
@@ -26,27 +12,26 @@ test('fragment lookup handles encoded, malformed and selector-like IDs safely', 
 	assert.equal(fragmentId('#'), null);
 });
 
-const groups = [[], [], []];
-const entries = sitemapEntries(groups);
+const entries = sitemapEntries();
 const files = {
 	sitemap: renderSitemap(entries),
 	llms: `# Site\n\n> Summary\n\n## Pages\n\n[Home](${productionOrigin}/)\n`,
 	robots: `User-agent: *\nAllow: /\nSitemap: ${productionOrigin}/sitemap.xml\n`,
 };
 
-test('empty categories keep canonical archive routes with stable reviewed dates', () => {
-	assert.equal(entries.length, 14);
-	assert.deepEqual(entries.slice(7).map(([path]) => path), entries.slice(0, 7).map(([path]) => `/en${path}`));
+test('retained showcase pages keep canonical routes with stable reviewed dates', () => {
+	assert.equal(entries.length, 8);
+	assert.deepEqual(entries.slice(4).map(([path]) => path), entries.slice(0, 4).map(([path]) => `/en${path}`));
 	assert.ok(entries.every(([path, date]) => date === pageModified(path)));
-	assert.equal(pageModified('/projekte/test/car/', ['9999-12-31']), '9999-12-31');
-	assert.equal(pageModified('/projekte/test/car/', ['2000-01-01']), pageModified('/projekte/test/car/'));
-	assert.equal(renderSitemap(sitemapEntries(groups)), files.sitemap);
+	assert.equal(pageModified('/handwerk/', ['9999-12-31']), '9999-12-31');
+	assert.equal(pageModified('/handwerk/', ['2000-01-01']), pageModified('/handwerk/'));
+	assert.equal(renderSitemap(sitemapEntries()), files.sitemap);
 });
 
 test('crawler validation preserves approved manual wording and rejects drift', () => {
 	checkCrawlerFiles(files, entries);
-	assert.throws(() => checkCrawlerFiles({ ...files, sitemap: files.sitemap.replace(/<lastmod>[^<]+<\/lastmod>/, '<lastmod>2000-01-01</lastmod>') }, entries), /npm run vehicles:sync/);
-	for (const path of ['/404.html', '/impressum/', '/absent/', '/oldtimer-kaufen/']) {
+	assert.throws(() => checkCrawlerFiles({ ...files, sitemap: files.sitemap.replace(/<lastmod>[^<]+<\/lastmod>/, '<lastmod>2000-01-01</lastmod>') }, entries), /npm run crawlers:sync/);
+	for (const path of ['/404.html', '/impressum/', '/absent/', '/projekte/aktuelle-projekte/']) {
 		assert.throws(() => checkCrawlerFiles({ ...files, llms: files.llms + `[Bad](${productionOrigin}${path})` }, entries), /non-canonical/);
 	}
 	assert.throws(() => checkCrawlerFiles({ ...files, robots: files.robots.replace(productionOrigin, 'https://example.com') }, entries), /production sitemap/);

@@ -49,5 +49,3 @@ for (const file of globSync('dist/**/*.html')) {
 }
 assert.deepEqual([...missing], [], 'Missing English translations. Add entries to src/i18n/en.json.');
 console.log(`Verified ${count} language pairs: translation coverage, language links and localized metadata.`);
-
-await import('./verify-vehicle-languages.mjs');

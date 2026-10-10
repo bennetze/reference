@@ -12,7 +12,6 @@ const styles = {
 	media: '.media-panel__shade { background-color: rgba(12,12,12,.56) !important; }',
 	text: 'html { font-size: 200% !important; }',
 	header: '.site-header { background: rgba(16,16,16,.85) !important; } .site-shell--light .site-header { background: rgba(238,238,238,.96) !important; }',
-	search: '.archive-search__field { border-color: rgba(17,17,17,.55) !important; } .archive-search input:focus-visible { outline: 2px solid #111 !important; outline-offset: 4px; } .archive-search input::placeholder { color: #555 !important; }',
 };
 const legacy = `delete HTMLElement.prototype.inert; HTMLDialogElement.prototype.showModal = undefined; HTMLDialogElement.prototype.close = undefined; Element.prototype.animate = undefined; Element.prototype.getAnimations = undefined; delete window.IntersectionObserver; MediaQueryList.prototype.addEventListener = undefined; const originalCssSupports = CSS.supports.bind(CSS); CSS.supports = (...args) => args[0] === "selector(:focus-visible)" ? false : originalCssSupports(...args);`;
 const reduced = `const originalMatchMedia = window.matchMedia.bind(window); window.matchMedia = query => { const result = originalMatchMedia(query); if (query.includes('prefers-reduced-motion')) Object.defineProperty(result, 'matches', {get: () => true}); return result; };`;
@@ -39,4 +38,4 @@ createServer(async (req, res) => {
 		}
 		res.setHeader('Content-Type', types[extname(path)] || 'application/octet-stream'); res.end(data);
 	} catch { res.writeHead(404); res.end('Not found'); }
-}).listen(4327, '127.0.0.1', () => console.log('Local accessibility fixtures: http://127.0.0.1:4327/?lang=de&audit=legacy (nojs, spacing, text, reduced, header, search, media)'));
+}).listen(4327, '127.0.0.1', () => console.log('Local accessibility fixtures: http://127.0.0.1:4327/?lang=de&audit=legacy (nojs, spacing, text, reduced, header, media)'));

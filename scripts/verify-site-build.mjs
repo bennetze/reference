@@ -20,6 +20,8 @@ async function collect(dir) {
 	}
 }
 await collect(root);
+const expected = ['404.html', 'index.html', 'handwerk/index.html', 'ueber-uns/index.html', 'projekte/index.html', 'impressum/index.html', 'datenschutz/index.html'];
+assert.deepEqual(files.map(file => file.slice(root.length + 1)).sort(), [...expected, ...expected.map(path => path === '404.html' ? 'en/404/index.html' : `en/${path}`)].sort(), 'Only retained showcase routes may be published.');
 const imageCache = new Map();
 const sitemap = load(await readFile(join(root, 'sitemap.xml'), 'utf8'), { xmlMode: true });
 const dates = new Map(sitemap('url').toArray().map((node) => [sitemap(node).find('loc').text(), sitemap(node).find('lastmod').text()]));
@@ -37,20 +39,13 @@ for (const file of files) {
 			for (const id of ($(element).attr(attribute) ?? '').split(/\s+/).filter(Boolean)) assert.ok(ids.has(id), `${file}: missing ${attribute} target ${id}`);
 		}
 	});
-	if ($('.vehicle-archive').length) {
-		const toggle = $('.category-switcher__toggle');
-		assert.equal(toggle.length, 1, `${file}: category disclosure`);
-		assert.equal(toggle.attr('type'), 'button');
-		assert.equal(toggle.attr('aria-expanded'), 'false');
-		assert.ok(toggle.is('[hidden]'), `${file}: enhancement-only trigger`);
-		const dialog = $(`#${toggle.attr('aria-controls')}`);
-		assert.ok(dialog.is('dialog:not([open])'), `${file}: category dialog starts closed`);
-		assert.equal(dialog.find('a[href]').length, 3);
-		assert.equal(dialog.find('a[aria-current="page"]').length, 1);
-		const links = $('.category-switcher__links');
-		assert.ok(!links.is('[hidden], [inert]'), `${file}: categories available without JavaScript`);
-		assert.equal(links.find('a[href]').length, 3);
-		assert.equal(links.find('a[aria-current="page"]').length, 1);
+	if ($('.legal-page').length) {
+		assert.equal($('.legal-page').children().length, 1, `${file}: legal pages contain only their heading`);
+		assert.equal($('.legal-page > h1').length, 1);
+	}
+	if ($('.projects-triptych').length) {
+		assert.equal($('.projects-triptych > section').length, 3);
+		assert.equal($('.projects-triptych a,.projects-triptych [tabindex]').length, 0, `${file}: project panels are noninteractive`);
 	}
 	const policy = $('meta[http-equiv="content-security-policy"]').attr('content');
 	assert.ok(policy, `${file}: missing CSP`);
@@ -76,7 +71,7 @@ for (const file of files) {
 		if (!path || path.endsWith('/')) path += 'index.html';
 		await access(join(root, decodeURIComponent(path)));
 	}
-	for (const element of $('[data-vehicle-card] img,.story-image img,.vehicle-lead img').toArray()) {
+	for (const element of $('.image-layer img,.project-panel img').toArray()) {
 		const image = $(element);
 		const filename = new URL(image.attr('src'), origin).pathname.slice(base.length);
 		const path = join(root, filename);
@@ -91,9 +86,6 @@ for (const file of files) {
 			assert.equal(descriptor, `${imageCache.get(variantPath).width}w`, `${file}: responsive width descriptor`);
 		}
 	}
-	$('[data-lightbox-trigger]').each((_, trigger) => {
-		assert.equal($(trigger).attr('data-lightbox-src'), $(trigger).find('img').attr('src'), `${file}: full-size lightbox source`);
-	});
 	const ogUrl = $('meta[property="og:url"]').attr('content');
 	assert.ok(ogUrl.startsWith(origin + base));
 	const indexable = !$('meta[name="robots"]').attr('content')?.includes('noindex');
@@ -122,8 +114,9 @@ for (const file of files) {
 			await access(join(root, new URL(value, origin).pathname.slice(base.length)));
 		}
 	}
+	assert.equal($('[data-site-motion][role="switch"]').length, 1, 'One shared motion switch per page.');
 	$('[data-motion-panel]').each((_, panel) => {
-		assert.equal($(panel).find('[data-motion-toggle]').length, 1);
+		assert.equal($(panel).find('[data-motion-toggle]').length, 0);
 		assert.equal($(panel).find('video source[src]').length, 0, 'Media sources wait for eligible playback.');
 		assert.equal($(panel).find('video').attr('preload'), 'none');
 		assert.equal($(panel).find('video[poster]').length, 0, 'The responsive still supplies the poster after selection.');

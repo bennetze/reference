@@ -1,24 +1,10 @@
 import { pageModified } from '../../src/config/modificationDates.js';
 
 export const productionOrigin = 'https://www.oldtimermanufaktur.de';
-export const categories = ['aktuelle-projekte', 'vergangene-projekte', 'fahrzeugangebote'];
-const escapeXml = (value) => value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&apos;');
+const escapeXml = value => value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&apos;');
 
-export function sitemapEntries(groups) {
-	const entries = ['/', '/ueber-uns/', '/handwerk/', '/projekte/'].map((path) => [path, pageModified(path)]);
-	categories.forEach((category, index) => {
-		const dates = groups[index].map((vehicle) => vehicle.dateModified);
-		const path = `/projekte/${category}/`;
-		entries.push([path, pageModified(path, dates)]);
-		if (category === 'vergangene-projekte') {
-			for (let page = 2; page <= Math.ceil(groups[index].length / 24); page++) {
-				const paginatedPath = `${path}seite/${page}/`;
-				entries.push([paginatedPath, pageModified(paginatedPath, dates)]);
-			}
-		}
-	});
-	for (const vehicle of groups.flat()) entries.push([vehicle.route, pageModified(vehicle.route, [vehicle.dateModified])]);
-	if (new Set(entries.map(([path]) => path)).size !== entries.length) throw new Error('Duplicate sitemap route.');
+export function sitemapEntries() {
+	const entries = ['/', '/ueber-uns/', '/handwerk/', '/projekte/'].map(path => [path, pageModified(path)]);
 	return [...entries, ...entries.map(([path, date]) => [`/en${path}`, date])];
 }
 
@@ -27,7 +13,7 @@ export function renderSitemap(entries) {
 }
 
 export function checkCrawlerFiles({ sitemap, llms, robots }, entries) {
-	if (sitemap !== renderSitemap(entries)) throw new Error('Sitemap is stale. Run npm run vehicles:sync and review public/sitemap.xml.');
+	if (sitemap !== renderSitemap(entries)) throw new Error('Sitemap is stale. Run npm run crawlers:sync and review public/sitemap.xml.');
 	const canonicalUrls = new Set(entries.map(([path]) => productionOrigin + path));
 	const links = [...llms.matchAll(/\[[^\]]+\]\(([^)]+)\)/g)].map((match) => match[1]);
 	if (!llms.startsWith('# ') || !/^> /m.test(llms) || !/^## /m.test(llms) || !links.length) throw new Error('llms.txt must retain its Markdown title, summary, sections and canonical links.');

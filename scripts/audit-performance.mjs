@@ -12,13 +12,7 @@ const records = [];
 let cacheMode = 'cold';
 const suites = new Map();
 const types = { '.html':'text/html; charset=utf-8', '.js':'text/javascript', '.css':'text/css', '.woff2':'font/woff2', '.webp':'image/webp', '.jpg':'image/jpeg', '.png':'image/png', '.avif':'image/avif', '.svg':'image/svg+xml', '.mp4':'video/mp4', '.webm':'video/webm' };
-const vehicleFolders = await readdir(join(root, 'projekte/vergangene-projekte'), {withFileTypes:true});
-const details = await Promise.all(vehicleFolders.filter(e=>e.isDirectory() && e.name !== 'seite').map(async e=>{
- const path = `/projekte/vergangene-projekte/${e.name}/`;
- return {path, bytes:(await readFile(join(root,path,'index.html'))).length};
-}));
-const longest = details.sort((a,b)=>b.bytes-a.bytes)[0]?.path;
-const routes = ['/', '/handwerk/', '/ueber-uns/', '/projekte/', '/projekte/aktuelle-projekte/', '/projekte/vergangene-projekte/', '/projekte/vergangene-projekte/seite/2/', '/projekte/fahrzeugangebote/', longest, '/impressum/', '/datenschutz/', '/404.html', '/en/', '/en/handwerk/', '/en/projekte/vergangene-projekte/', longest && `/en${longest}`].filter(Boolean);
+const routes = ['/', '/handwerk/', '/ueber-uns/', '/projekte/', '/impressum/', '/datenschutz/', '/404.html', '/en/', '/en/handwerk/', '/en/ueber-uns/', '/en/projekte/'];
 const median = values => { const sorted=values.filter(Number.isFinite).sort((a,b)=>a-b); return sorted.length ? sorted[Math.floor(sorted.length/2)] : null; };
 function summary() {
  const groups = new Map();
@@ -75,7 +69,7 @@ createServer(async(req,res)=>{
  let bytes=await readFile(file);const injection=pending.get(url.pathname+url.search);pending.delete(url.pathname+url.search);
  if(injection){
  const token=url.searchParams.get('__perf');
- if(cacheMode==='cold') bytes=Buffer.from(bytes.toString().replace(/(\/(?:oldtimer\/)?(?:_astro|vehicle-gallery)\/[^\s"'<>(),;?]+)/g, `$1?__perf_cache=${encodeURIComponent(token)}`));
+ if(cacheMode==='cold') bytes=Buffer.from(bytes.toString().replace(/(\/(?:oldtimer\/)?_astro\/[^\s"'<>(),;?]+)/g, `$1?__perf_cache=${encodeURIComponent(token)}`));
  const $=load(bytes.toString());const meta=$('meta[http-equiv="content-security-policy"]');const digest=createHash('sha256').update(injection).digest('base64');meta.attr('content',meta.attr('content').replace(/(script-src-elem[^;]*)/,'$1 '+`'sha256-${digest}'`));meta.after(`<script>${injection}</script>`);
  for(const [selector,directive] of [['script:not([src])','script-src-elem'],['style','style-src-elem']]){
  $(selector).each((_,node)=>{const hash=createHash('sha256').update($(node).html()||'').digest('base64');meta.attr('content',meta.attr('content').replace(new RegExp(`(${directive}[^;]*)`),`$1 'sha256-${hash}'`));});

@@ -1,7 +1,7 @@
 import { readdirSync } from 'node:fs';
 import { resolve, relative } from 'node:path';
 
-// Reuse every existing page and its getStaticPaths; vehicle discovery remains unchanged.
+// Register each retained page in English using the same Astro template.
 export default function englishRoutes() {
 	return {
 		name: 'oldtimer-english-routes',

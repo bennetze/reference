@@ -1,0 +1,35 @@
+/* Native full-document navigation keeps CSP, history and script lifecycle intact. */
+@view-transition { navigation: auto; }
+
+html[data-motion="on"] .site-header { view-transition-name: site-header; }
+::view-transition-group(*) { animation-duration: 480ms; animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
+::view-transition-old(root) { animation: page-dissolve-out 320ms ease both; }
+::view-transition-new(root) { animation: page-dissolve-in 480ms ease both; }
+::view-transition-old(site-header) { animation: page-dissolve-out 240ms ease both; }
+::view-transition-new(site-header) { animation: page-dissolve-in 240ms ease both; }
+::view-transition-image-pair(root) { isolation: isolate; }
+::view-transition-old(root), ::view-transition-new(root) { mix-blend-mode: normal; }
+@keyframes page-dissolve-out { to { opacity: 0; } }
+@keyframes page-dissolve-in { from { opacity: 0; } to { opacity: 1; } }
+
+html[data-page-transitions="fade"][data-motion="on"] main {
+	animation: page-dissolve-in 420ms ease both;
+}
+html[data-page-transitions="fade"][data-motion="on"] body[data-page-leaving] main {
+	animation: page-dissolve-out 160ms ease both;
+}
+
+html[data-motion="off"] *,
+html[data-motion="off"] *::before,
+html[data-motion="off"] *::after {
+	animation: none !important;
+	transition: none !important;
+	scroll-behavior: auto !important;
+}
+html[data-motion="off"]::view-transition-group(*),
+html[data-motion="off"]::view-transition-old(*),
+html[data-motion="off"]::view-transition-new(*) { animation: none !important; }
+@media (prefers-reduced-motion: reduce) {
+	@view-transition { navigation: none; }
+	::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}

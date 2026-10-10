@@ -1,14 +1,13 @@
 import { translate } from './translate.js';
 
-// Only site-owned text passes through the dictionary. Authored vehicle fields
-// carry an explicit boundary so identical wording in other records cannot collide.
+// Translate site-owned text; explicit authored boundaries remain available for page copy.
 export function translateSiteText($) {
 	$('*').contents().each((_, node) => {
 		if (node.type === 'text' && !$(node).parents('script,style,[data-authored]').length) node.data = translate(node.data);
 	});
 	$('*').each((_, node) => {
 		if ($(node).closest('[data-authored]').length) return;
-		for (const attribute of ['alt', 'aria-label', 'placeholder', 'title', 'data-search-value', 'data-lightbox-alt']) {
+		for (const attribute of ['alt', 'aria-label', 'placeholder', 'title']) {
 			const value = $(node).attr(attribute);
 			if (value) $(node).attr(attribute, translate(value));
 		}

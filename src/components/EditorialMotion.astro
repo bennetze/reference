@@ -20,7 +20,6 @@ const { mp4, mobileMp4, webm, poster, avif, webp, alt } = Astro.props;
 		<source data-motion-src={webm} type="video/webm" />
 	</video>
 	<MotionPoster {poster} {avif} webp={import.meta.env.BASE_URL === '/' ? webp : undefined} {alt} sizes="(max-width: 840px) 76vw, 42vw" />
-	<button class="hero-motion-toggle is-paused" type="button" data-motion-toggle hidden aria-label="Animation abspielen"><span aria-hidden="true"></span></button>
 </div>
 
 <script>
@@ -35,10 +34,5 @@ const { mp4, mobileMp4, webm, poster, avif, webp, alt } = Astro.props;
 	.editorial-motion video { visibility: hidden; opacity: 0; transition: opacity 300ms ease; }
 	.editorial-motion.is-video-ready video { visibility: visible; opacity: 1; }
 	.editorial-motion.is-video-ready :global(picture) { opacity: 0; pointer-events: none; }
-	.hero-motion-toggle { position: absolute; right: 0.75rem; bottom: 0.75rem; z-index: 4; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; color: #fff; background: rgba(16,16,16,0.8); border: 1px solid #eee; border-radius: 50%; cursor: pointer; }
-	.hero-motion-toggle span { width: 11px; height: 14px; border-left: 2px solid currentColor; border-right: 2px solid currentColor; }
-	.hero-motion-toggle.is-paused span { width: 0; height: 0; margin-left: 2px; border-top: 7px solid transparent; border-right: 0; border-bottom: 7px solid transparent; border-left: 11px solid currentColor; }
-	.hero-motion-toggle:hover { background: #111; }
-	.hero-motion-toggle:focus-visible { outline: 3px solid #fff; outline-offset: 3px; box-shadow: 0 0 0 7px #111; }
 	@media (prefers-reduced-motion: reduce) { .editorial-motion video { transition: none; } }
 </style>

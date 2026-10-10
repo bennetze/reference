@@ -1,21 +1,16 @@
 ---
-import { Image } from 'astro:assets';
 import { companyLogo } from '../config/branding';
 import { languagePath } from '../i18n/language.js';
+import { siteStatus } from '../config/site';
 interface Props {
 	theme?: 'dark' | 'light';
 }
 
 const navigationItems = [
 	{ title: 'Startseite', href: '/', activePath: '/' },
-	{ title: 'Handwerk', href: '/handwerk/', activePath: '/handwerk' },
-	{ title: 'Über uns', href: '/ueber-uns/', activePath: '/ueber-uns' },
-	{ title: 'Projekte', href: '/projekte/', activePath: '/projekte' },
-	{
-		title: 'Fahrzeugangebote',
-		href: '/projekte/fahrzeugangebote/',
-		activePath: '/projekte/fahrzeugangebote',
-	},
+	{ title: 'Unser Handwerk', href: '/handwerk/', activePath: '/handwerk' },
+	{ title: 'Wir Über Uns', href: '/ueber-uns/', activePath: '/ueber-uns' },
+	{ title: 'Unsere Projekte', href: '/projekte/', activePath: '/projekte' },
 ];
 
 const { theme = 'dark' } = Astro.props;
@@ -28,11 +23,7 @@ const currentPath = (
 		? Astro.url.pathname.slice(deploymentBase.length)
 		: Astro.url.pathname
 ).replace(/^\/en(?=\/|$)/, '').replace(/\/+$/, '') || '/';
-const activeNavigationPath = currentPath.startsWith('/projekte/fahrzeugangebote')
-	? '/projekte/fahrzeugangebote'
-	: currentPath.startsWith('/projekte')
-		? '/projekte'
-		: currentPath;
+const activeNavigationPath = currentPath;
 const sitePath = (path) => {
 	if (path === '/') {
 		return basePath;
@@ -58,8 +49,9 @@ const sitePath = (path) => {
 			<span class="menu-lines" aria-hidden="true"></span>
 			<span>Menü</span>
 		</a>
-		<a class="brand brand--logo" href={sitePath('/')} aria-label="Die Oldtimermanufaktur Startseite">
-			<Image class="brand-logo" src={companyLogo} width={720} widths={[240, 360, 480, 720]} sizes="(max-width: 760px) 240px, 360px" alt="" aria-hidden="true" draggable="false" loading="eager" />
+		<a class="brand" href={sitePath('/')} aria-label="Die Oldtimermanufaktur Startseite">
+			<img class="brand-mark" src={companyLogo.src} width="2050" height="485" alt="" aria-hidden="true" draggable="false" />
+			<span>Die Oldtimermanufaktur</span>
 		</a>
 		<nav class="language-switch" aria-label="Sprache wählen">
 			<a href={`${languagePath(Astro.url.pathname, 'de', basePath)}?lang=de`} data-language="de" lang="de" hreflang="de" aria-label="Deutsch (DE)">DE</a>
@@ -87,6 +79,11 @@ const sitePath = (path) => {
 					))
 				}
 			</nav>
+			<label class="motion-preference" hidden>
+				<span>Bewegung</span>
+				<input type="checkbox" role="switch" data-site-motion />
+				<span class="motion-preference__track" aria-hidden="true"></span>
+			</label>
 			<label class="pointer-preference" hidden>
 				<input type="checkbox" data-system-pointer />
 				<span>Systemzeiger verwenden</span>
@@ -98,6 +95,7 @@ const sitePath = (path) => {
 
 	<footer class="site-footer" id="site-footer">
 		<a class="footer-brand" href={sitePath('/')}>DIE OLDTIMERMANUFAKTUR</a>
+		{siteStatus.developmentPreview && <p class="development-notice">Website-Demonstration · Entwicklungsvorschau</p>}
 		<nav class="footer-primary" aria-label="Seitennavigation">
 			{
 				navigationItems.map((item) => (
@@ -120,6 +118,15 @@ const sitePath = (path) => {
 
 <script>
 	import { watchMedia, setIsolated, systemPointerPreference } from '../scripts/accessibility.js';
+	import { getSiteMotion } from '../scripts/siteMotion.js';
+	const motion = getSiteMotion();
+	const motionControl = document.querySelector('[data-site-motion]');
+	if (motionControl instanceof HTMLInputElement) {
+		motionControl.checked = motion.enabled;
+		motionControl.closest('label').hidden = false;
+		motionControl.addEventListener('change', () => motion.set(motionControl.checked));
+		motion.subscribe(({ enabled }) => { motionControl.checked = enabled; });
+	}
 	// Older engines do not understand selector() conditions or :focus-visible.
 	let supportsFocusVisible = false;
 	try { supportsFocusVisible = Boolean(window.CSS?.supports?.('selector(:focus-visible)')); } catch { /* Older CSS API. */ }
@@ -185,7 +192,10 @@ const sitePath = (path) => {
 		}
 		if (pointerControl instanceof HTMLInputElement) {
 			pointerControl.checked = pointerChoice.enabled;
-			pointerControl.closest('label').hidden = false;
+				const pointerSurface = window.matchMedia('(min-width: 761px) and (hover: hover) and (pointer: fine)');
+				const updatePointerControl = () => { pointerControl.closest('label').hidden = !pointerSurface.matches; };
+				watchMedia(pointerSurface, updatePointerControl);
+				updatePointerControl();
 			pointerControl.addEventListener('change', () => {
 				pointerChoice.set(pointerControl.checked);
 				updateCursor();
@@ -222,7 +232,8 @@ const sitePath = (path) => {
 	}
 
 	const focusableMenuItems = () =>
-		menuPanel ? [...menuPanel.querySelectorAll('a[href], button:not([disabled]), input:not([disabled])')] : [];
+		menuPanel ? [...menuPanel.querySelectorAll('a[href], button:not([disabled]), input:not([disabled])')]
+			.filter((element) => element.getClientRects().length > 0) : [];
 
 	const setMenuBackgroundInert = (shouldBeInert) => {
 		if (!(siteShell instanceof HTMLElement)) {
@@ -312,7 +323,7 @@ const sitePath = (path) => {
 	const scrollToSection = (section) => {
 		stopSectionScroll();
 
-		if (prefersReducedMotion.matches || typeof window.requestAnimationFrame !== 'function') {
+		if (!motion.enabled || prefersReducedMotion.matches || typeof window.requestAnimationFrame !== 'function') {
 			section.scrollIntoView({ block: 'start', behavior: 'auto' });
 			clearHash();
 			return;
@@ -352,6 +363,8 @@ const sitePath = (path) => {
 			stopSectionScroll();
 		}
 	});
+
+	motion.subscribe(({ enabled }) => { if (!enabled) stopSectionScroll(); });
 
 	// Arrow keys retain browser and assistive-technology behavior.
 	window.addEventListener('keydown', (event) => {
@@ -517,13 +530,10 @@ const sitePath = (path) => {
 	}
 
 	.site-shell {
-		--site-header-height: calc(clamp(64px, 44px + 4vw, 116px) + env(safe-area-inset-top, 0px));
+		--site-header-height: calc(112px + env(safe-area-inset-top, 0px));
 		min-height: 100vh;
 	}
 
-	.site-shell--home {
-		--site-header-height: calc(clamp(88px, 64px + 5vw, 168px) + env(safe-area-inset-top, 0px));
-	}
 
 	.site-shell--light {
 		background: #eeeeee;
@@ -624,17 +634,17 @@ const sitePath = (path) => {
 		background: rgba(255, 255, 255, 0.40);
 	}
 
-	.site-shell--home .brand {
+	.brand {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: clamp(0.5rem, 0.85vw, 1rem);
-		font-size: clamp(0.9rem, 1.35vw, 1.55rem);
+		gap: 0.3rem;
+		font-size: clamp(0.75rem, 1vw, 0.95rem);
 	}
 
 	.brand-mark {
 		display: block;
-		width: clamp(128px, 12vw, 224px);
+		width: clamp(128px, 11vw, 164px);
 		max-width: 100%;
 		height: auto;
 	}
@@ -643,37 +653,16 @@ const sitePath = (path) => {
 	.footer-brand {
 		font-family: var(--font-heading);
 		color: currentColor;
-		font-weight: 500;
-		letter-spacing: 0.34em;
+		font-weight: 450;
+		letter-spacing: 0.14em;
 		text-decoration: none;
 		text-align: center;
 		white-space: nowrap;
 	}
 
-	.brand {
-		font-size: clamp(0.75rem, 1.1vw, 1.25rem);
-	}
 
-	.brand.brand--logo {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		min-width: 0;
-		min-height: 44px;
-	}
-
-	.brand-logo {
-		display: block;
-		filter: brightness(85%);
-		width: clamp(180px, 24vw, 360px);
-		max-width: 100%;
-		height: auto;
-		max-height: calc(var(--site-header-height) - env(safe-area-inset-top, 0px) - 16px);
-		object-fit: contain;
-	}
-
-	.site-shell:not(.site-shell--home) .brand-logo {
-		max-height: calc(var(--site-header-height) - env(safe-area-inset-top, 0px) - clamp(28px, 2.5vw, 40px));
+	.site-shell:not(.site-shell--home) .brand-mark {
+		filter: brightness(0);
 	}
 
 	.footer-brand {
@@ -689,7 +678,7 @@ const sitePath = (path) => {
 		text-transform: uppercase;
 		letter-spacing: 0.24em;
 		font-size: 0.66rem;
-		font-weight: 500;
+		font-weight: 450;
 	}
 
 	.menu-toggle,
@@ -725,6 +714,60 @@ const sitePath = (path) => {
 		transform: translateY(6px);
 	}
 
+
+	.motion-preference {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 2rem;
+		width: min(100%, 300px);
+		min-height: 48px;
+		margin: 0 auto 0.75rem;
+		padding: 0.5rem 0;
+		color: var(--color-main);
+		font-size: 1rem;
+		font-weight: 450;
+		cursor: pointer;
+	}
+	.motion-preference[hidden] { display: none; }
+	.motion-preference input {
+		position: absolute;
+		right: 0;
+		width: 52px;
+		height: 44px;
+		margin: 0;
+		opacity: 0;
+		cursor: pointer;
+	}
+	.motion-preference__track {
+		display: block;
+		width: 48px;
+		height: 26px;
+		border: 1px solid rgba(238, 238, 238, 0.55);
+		border-radius: 999px;
+		background: rgba(238, 238, 238, 0.06);
+		transition: background 220ms ease, border-color 220ms ease;
+	}
+	.motion-preference__track::before {
+		content: '';
+		display: block;
+		width: 18px;
+		height: 18px;
+		margin: 3px;
+		border-radius: 50%;
+		background: #eeeeee;
+		transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.motion-preference input:checked + .motion-preference__track { background: rgba(238, 238, 238, 0.22); border-color: #eeeeee; }
+	.motion-preference input:checked + .motion-preference__track::before { transform: translateX(22px); }
+	.motion-preference input:focus-visible + .motion-preference__track,
+	:global(.legacy-focus) .motion-preference input:focus + .motion-preference__track { outline: 2px solid currentColor; outline-offset: 5px; }
+	@media (forced-colors: active) {
+		.motion-preference__track { border-color: ButtonText; }
+		.motion-preference__track::before { background: ButtonText; }
+		.motion-preference input:checked + .motion-preference__track { background: Highlight; border-color: Highlight; }
+	}
 
 	.pointer-preference {
 		display: flex;
@@ -866,7 +909,7 @@ const sitePath = (path) => {
 		color: rgba(238, 238, 238, 0.68);
 		font-family: var(--font-heading);
 		font-size: clamp(0.98rem, 1.55vw, 1.55rem);
-		font-weight: 400;
+		font-weight: 450;
 		line-height: 1.2;
 		letter-spacing: 0.28em;
 		text-decoration: none;
@@ -928,6 +971,14 @@ const sitePath = (path) => {
 		z-index: 2;
 	}
 
+	.site-footer .development-notice {
+		max-width: 34rem;
+		margin: 0.85rem 0 0;
+		font-size: 0.875rem;
+		letter-spacing: 0.06em;
+		line-height: 1.6;
+	}
+
 	.footer-primary,
 	.footer-legal {
 		display: flex;
@@ -947,7 +998,7 @@ const sitePath = (path) => {
 	.footer-legal {
 		text-transform: uppercase;
 		letter-spacing: 0.24em;
-		font-weight: 400;
+		font-weight: 450;
 		margin-top: clamp(1.5rem, 2.6vw, 2.2rem);
 	}
 
@@ -1018,6 +1069,10 @@ const sitePath = (path) => {
 	}
 
 	@media (max-width: 760px) {
+		.site-shell {
+			--site-header-height: calc(88px + env(safe-area-inset-top, 0px));
+		}
+
 		.site-shell--home .site-header {
 			grid-template-columns: 44px minmax(0, 1fr) 88px;
 		}
@@ -1026,26 +1081,23 @@ const sitePath = (path) => {
 			flex-direction: row;
 		}
 
-		.site-shell--home .brand {
-			gap: 0.5rem;
+		.brand {
+			gap: 0.2rem;
 			container-type: inline-size;
 			width: 100%;
 			letter-spacing: 0.025em;
 		}
 
-		.site-shell--home .brand span {
+		.brand span {
 			font-size: 0.75rem;
 			font-size: clamp(0.625rem, 5.6cqi, 0.9rem);
 			white-space: nowrap;
 		}
 
 		.brand-mark {
-			width: min(128px, 70%);
+			width: min(140px, 70%);
 		}
 
-		.brand-logo {
-			width: min(100%, 240px);
-		}
 
 		.cursor {
 			display: none;
@@ -1152,8 +1204,14 @@ const sitePath = (path) => {
 			padding: 2.5rem max(1.25rem, env(safe-area-inset-right, 0px)) max(2.5rem, env(safe-area-inset-bottom, 0px)) max(1.25rem, env(safe-area-inset-left, 0px));
 		}
 
-		.chrome-ready .footer-primary {
-			display: none;
+		.footer-primary {
+			gap: 0.5rem 1.25rem;
+		}
+
+		.footer-primary a {
+			display: inline-flex;
+			align-items: center;
+			min-height: 44px;
 		}
 
 		.footer-legal {

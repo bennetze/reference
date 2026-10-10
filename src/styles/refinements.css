@@ -45,7 +45,7 @@
 	background: #111 !important;
 	box-shadow: 0 0 0 1px #fff;
 }
-.scroll-cue:focus-visible, .hero-motion-toggle:focus-visible,
+.scroll-cue:focus-visible,
 .section-indicator__dot:focus-visible {
 	outline: 2px solid #fff !important;
 	outline-offset: 3px !important;
@@ -56,7 +56,7 @@
 	box-shadow: 0 0 0 6px #fff !important;
 }
 /* Engines without :focus-visible retain the same visible focus fallback. */
-.legacy-focus .scroll-cue:focus, .legacy-focus .hero-motion-toggle:focus,
+.legacy-focus .scroll-cue:focus,
 .legacy-focus .section-indicator__dot:focus {
 	outline: 2px solid #fff !important;
 	outline-offset: 3px !important;
@@ -69,23 +69,23 @@
 /* Browser/OS accessibility modes use explicit surfaces and system colors. */
 @media (forced-colors: active) {
 	:where(.site-header, .menu-panel, .site-footer, .category-dialog, .image-lightbox,
-		.vehicle-card, .section-cta, .not-found__home) {
+		.section-cta, .not-found__home) {
 		background: Canvas !important;
 		color: CanvasText !important;
 		border: 1px solid CanvasText !important;
 		backdrop-filter: none !important;
 	}
-	:where(.background-texture, .cursor) { display: none !important; }
+	:where(.cursor) { display: none !important; }
 	:where(a, button, input, label, .site-footer p) { opacity: 1 !important; }
 	:where(button, input, .section-cta) { border: 1px solid ButtonText !important; }
 	:where(a, button, input, [tabindex]):focus-visible { outline: 2px solid Highlight !important; }
 	.section-indicator__dot::after { background: ButtonText !important; }
 	.section-indicator__dot.is-active::before { border-color: Highlight !important; }
 	.scroll-cue { color: ButtonText !important; filter: none; }
-	.scroll-cue:focus-visible, .hero-motion-toggle:focus-visible,
+	.scroll-cue:focus-visible,
 	.section-indicator__dot:focus-visible,
 	.section-indicator--light .section-indicator__dot:focus-visible,
-	.legacy-focus .scroll-cue:focus, .legacy-focus .hero-motion-toggle:focus,
+	.legacy-focus .scroll-cue:focus,
 	.legacy-focus .section-indicator__dot:focus,
 	.legacy-focus .section-indicator--light .section-indicator__dot:focus {
 		outline-color: Highlight !important;
@@ -129,8 +129,14 @@
 :where(main[id], section[id], footer[id]) { scroll-margin-top: calc(var(--accessible-header-height, 6rem) + 1rem); }
 @media (prefers-contrast: more) {
 	.media-panel__shade { background-color: rgba(12, 12, 12, 0.65) !important; }
-	.hero-motion-toggle { border-color: currentColor !important; background-color: #101010 !important; }
 }
 /* Author display rules must not expose enhancement-only or filtered controls. */
 [hidden] { display: none !important; }
 dialog:not([open]) { display: none; }
+
+/* Small controls respond without changing their hit areas or text layout. */
+.menu-toggle, .menu-close, .language-switch a {
+	transition: color 180ms ease, opacity 180ms ease, background-color 180ms ease;
+}
+.menu-toggle:hover, .menu-toggle:focus-visible,
+.menu-close:hover, .menu-close:focus-visible { background-color: rgba(238, 238, 238, 0.06); }

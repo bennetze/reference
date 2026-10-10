@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, globSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import { languagePath, preferredLanguage } from '../src/i18n/language.js';
 import { translate } from '../src/i18n/translate.js';
@@ -67,15 +67,7 @@ test('base path, invalid choices and English error pages never create redirect l
 	assert.equal(languagePath('/404.html', 'en'), '/en/404/');
 });
 
-test('every vehicle has self-contained bilingual content', async () => {
-	const { validateVehicleRecord } = await import('../src/config/vehicleRecord.js');
-	const { validateVehicleHtml } = await import('../src/config/vehicleHtml.js');
-	for (const file of globSync('src/pages/**/vehicle.json')) validateVehicleRecord(JSON.parse(readFileSync(file)), validateVehicleHtml);
-});
-
 test('generated labels, titles and alternatives are localized without changing model names', () => {
-	assert.equal(translate('Abgeschlossene Projekte – Seite 2 | Die Oldtimermanufaktur'), 'Completed projects – Page 2 | Die Oldtimermanufaktur');
-	assert.equal(translate('BMW Z1 Roadster, Baujahr 1990 – Aufnahme 2 der Fahrzeugdokumentation vergrößern'), 'BMW Z1 Roadster, year 1990 – photograph 2 in the vehicle record — enlarge');
 	assert.equal(translate('  Über uns\n'), '  About us\n');
 	assert.equal(`${translate('Wir bewahren')} ${translate('Geschichte')}`, 'WE PRESERVE STORIES AND HISTORY');
 });

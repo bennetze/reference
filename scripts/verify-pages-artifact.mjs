@@ -2,7 +2,7 @@ import { lstat, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 
 const root = join(process.cwd(), 'dist');
-// All vehicle documentation is included; compressed images keep the artifact bounded.
+// Keep the client-showcase deployment within the preview artifact budget.
 const maxFiles = 5000;
 const maxBytes = 150 * 1024 * 1024;
 let files = 0;

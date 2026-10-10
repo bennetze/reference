@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { runInNewContext } from 'node:vm';
 import test from 'node:test';
 
-import { systemPointerPreference } from '../src/scripts/accessibility.js';
+import { systemPointerPreference, watchMedia } from '../src/scripts/accessibility.js';
 const component = await readFile(new URL('../src/components/SiteChrome.astro', import.meta.url), 'utf8');
 const source = component.slice(component.indexOf('\tif (cursor instanceof HTMLElement) {'), component.indexOf('\n\tconst focusableMenuItems'));
 
@@ -41,7 +41,7 @@ function harness({ supported = true, maskSupported = true, legacy = false } = {}
 	const preferences = [];
 	window.matchMedia = () => {
 		const preference = new Element();
-		preference.matches = preferences.length === 0;
+		preference.matches = preferences.length === 0 || preferences.length === 3;
 		if (legacy) {
 			preference.addListener = handler => Element.prototype.addEventListener.call(preference, 'change', handler);
 			preference.addEventListener = undefined;
@@ -54,9 +54,9 @@ function harness({ supported = true, maskSupported = true, legacy = false } = {}
 	window.requestAnimationFrame = callback => { const id = nextFrame++; frames.set(id, callback); return id; };
 	window.cancelAnimationFrame = id => frames.delete(id);
 	window.PointerEvent = function () {};
-	runInNewContext(source, { systemPointerPreference, HTMLInputElement: Element, cursor, document, window, Element, HTMLElement: Element, CSS: { supports: property => property.includes('mask-image') ? maskSupported : supported }, interactiveSelector: 'a, button, [role="button"]' });
+	runInNewContext(source, { systemPointerPreference, watchMedia, HTMLInputElement: Element, cursor, document, window, Element, HTMLElement: Element, CSS: { supports: property => property.includes('mask-image') ? maskSupported : supported }, interactiveSelector: 'a, button, [role="button"]' });
 	return {
-		cursor, pointerControl, document, window, preferences, frames,
+		cursor, pointerControl, label, document, window, preferences, frames,
 		target: kind => new Element(kind),
 		active: () => document.documentElement.classList.contains('has-custom-cursor'),
 		move: (kind = '', pointerType = 'mouse', x = 100) => window.emit('pointermove', { target: new Element(kind), pointerType, clientX: x, clientY: 80 }),
@@ -128,4 +128,17 @@ test('explicit system-pointer choice disables the decorative pointer immediately
 	const h = harness(); h.move(); h.flush(); assert.equal(h.active(), true);
 	h.pointerControl.checked = true; h.pointerControl.emit('change'); h.move(); h.flush(); assert.equal(h.active(), false);
 	h.pointerControl.checked = false; h.pointerControl.emit('change'); h.move(); h.flush(); assert.equal(h.active(), true);
+});
+
+test('pointer settings follow the live availability of a desktop fine pointer', () => {
+	for (const legacy of [false, true]) {
+		const h = harness({ legacy });
+		assert.equal(h.label.hidden, false);
+		h.preferences[3].matches = false;
+		h.preferences[3].emit('change');
+		assert.equal(h.label.hidden, true);
+		h.preferences[3].matches = true;
+		h.preferences[3].emit('change');
+		assert.equal(h.label.hidden, false);
+	}
 });

@@ -7,33 +7,29 @@
     "npm": ">=11.18.0"
   },
   "scripts": {
-    "dev": "npm run vehicles:gallery && astro dev",
-    "vehicles:sync": "node scripts/test-vehicle-discovery.mjs && node scripts/sync-vehicle-crawler-files.mjs",
-    "vehicles:gallery": "node scripts/generate-vehicle-gallery.mjs",
-    "test:vehicle-discovery": "node scripts/test-vehicle-discovery.mjs",
-    "vehicles:import": "node scripts/import-legacy-vehicles.mjs",
-    "build": "npm run crawlers:check && node scripts/generate-vehicle-gallery.mjs production && astro build && node scripts/prepare-crawler-files.mjs production && node scripts/prepare-vehicle-redirects.mjs production && node scripts/verify-vehicle-build.mjs production && node scripts/verify-site-build.mjs production && node scripts/verify-language-build.mjs && node scripts/audit-accessibility.mjs",
-    "build:pages": "npm run crawlers:check && node scripts/generate-vehicle-gallery.mjs github-pages cache && DEPLOY_TARGET=github-pages astro build && node scripts/prune-pages-motion-fallbacks.mjs && node scripts/generate-vehicle-gallery.mjs github-pages dist && node scripts/prepare-crawler-files.mjs github-pages && node scripts/prepare-vehicle-redirects.mjs github-pages && node scripts/verify-vehicle-build.mjs github-pages && node scripts/verify-pages-artifact.mjs && node scripts/verify-site-build.mjs github-pages && node scripts/verify-language-build.mjs && node scripts/audit-accessibility.mjs",
+    "dev": "astro dev",
+    "build": "npm run crawlers:check && astro build && node scripts/prepare-crawler-files.mjs production && node scripts/verify-site-build.mjs production && node scripts/verify-language-build.mjs && node scripts/audit-accessibility.mjs",
+    "build:pages": "npm run crawlers:check && DEPLOY_TARGET=github-pages astro build && node scripts/prune-pages-motion-fallbacks.mjs && node scripts/prepare-crawler-files.mjs github-pages && node scripts/verify-pages-artifact.mjs && node scripts/verify-site-build.mjs github-pages && node scripts/verify-language-build.mjs && node scripts/audit-accessibility.mjs",
     "predeploy": "npm run build:pages",
     "deploy": "gh-pages -d dist -b gh-pages --nojekyll -m \"Deploy website\"",
     "preview": "astro preview",
     "astro": "astro",
     "encode-video": "scripts/encode-site-video.sh",
-    "crawlers:check": "node scripts/sync-vehicle-crawler-files.mjs --check",
-    "test": "node --test tests/*.test.mjs && npm run test:vehicle-discovery",
-    "vehicles:review": "node scripts/review-vehicle-import.mjs",
+    "crawlers:check": "node scripts/sync-crawler-files.mjs --check",
+    "test": "node --test tests/*.test.mjs",
     "security:check": "npm audit --include=dev --include=optional --include=peer && npm audit signatures",
-    "test:site": "node scripts/test-site.mjs && npm run test:vehicle-discovery",
+    "test:site": "npm test",
     "audit:accessibility": "node scripts/audit-accessibility.mjs",
     "preview:accessibility": "node scripts/preview-accessibility.mjs",
-    "audit:performance": "node scripts/audit-performance.mjs"
+    "audit:performance": "node scripts/audit-performance.mjs",
+    "crawlers:sync": "node scripts/sync-crawler-files.mjs"
   },
   "dependencies": {
     "astro": "^7.3.5"
   },
   "devDependencies": {
     "cheerio": "^1.2.0",
-    "gh-pages": "^6.3.0",
+    "gh-pages": "6.1.1",
     "sharp": "^0.35.5"
   },
   "allowScripts": {

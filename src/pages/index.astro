@@ -50,9 +50,9 @@ const sitePath = (path) => {
 
 const sectionNavigationItems = [
   { id: "start", label: "Start" },
-  { id: "handwerk", label: "Handwerk" },
-  { id: "ueber-uns", label: "Über uns" },
-  { id: "projekte", label: "Projekte" },
+  { id: "handwerk", label: "Unser Handwerk" },
+  { id: "ueber-uns", label: "Wir Über Uns" },
+  { id: "projekte", label: "Unsere Projekte" },
 ];
 ---
 
@@ -92,14 +92,6 @@ const sectionNavigationItems = [
         </video>
         <MotionPoster poster={heroSiteRevealPoster} avif={heroSiteMotionAvif.src} webp={includeWebpMotionFallback ? heroSiteMotionWebp.src : undefined} first />
         <div class="media-panel__shade"></div>
-        <button
-          class="hero-motion-toggle"
-          type="button"
-          data-motion-toggle hidden
-          aria-label="Animation abspielen"
-        >
-          <span aria-hidden="true"></span>
-        </button>
         <div class="media-panel__content media-panel__content--hero">
           <h1 id="hero-title">
             Wir bewahren <span class="hero-title__word"
@@ -115,7 +107,7 @@ const sectionNavigationItems = [
             class="scroll-cue"
             href="#handwerk"
             data-scroll-target="#handwerk"
-            aria-label="Zum Handwerk scrollen"
+            aria-label="Zu unserem Handwerk scrollen"
           >
             <span aria-hidden="true"></span>
           </a>
@@ -146,9 +138,6 @@ const sectionNavigationItems = [
           />
         </video>
         <MotionPoster poster={handwerkPoster} avif={handwerkMotionAvif.src} webp={includeWebpMotionFallback ? handwerkMotionWebp.src : undefined} />
-        <button class="hero-motion-toggle is-paused" type="button" data-motion-toggle hidden aria-label="Animation abspielen">
-          <span aria-hidden="true"></span>
-        </button>
         <div class="media-panel__shade"></div>
         <a
           class="scroll-cue scroll-cue--up section-up-cue"
@@ -159,7 +148,7 @@ const sectionNavigationItems = [
           <span aria-hidden="true"></span>
         </a>
         <div class="media-panel__content media-panel__content--craft">
-          <h2 id="craft-title">Handwerk</h2>
+          <h2 id="craft-title">Unser Handwerk</h2>
           <div class="section-cta-slot">
             <a class="section-cta" href={sitePath("/handwerk/")}>
               <span class="section-cta__label">Mehr erfahren</span>
@@ -170,7 +159,7 @@ const sectionNavigationItems = [
               class="scroll-cue"
               href="#ueber-uns"
               data-scroll-target="#ueber-uns"
-              aria-label="Zu Über uns scrollen"
+              aria-label="Zu Wir Über Uns scrollen"
             >
               <span aria-hidden="true"></span>
             </a>
@@ -200,21 +189,17 @@ const sectionNavigationItems = [
         </video>
 
         <MotionPoster poster={ueberUnsPoster} avif={ueberUnsMotionAvif.src} webp={includeWebpMotionFallback ? ueberUnsMotionWebp.src : undefined} />
-
-        <button class="hero-motion-toggle is-paused" type="button" data-motion-toggle hidden aria-label="Animation abspielen">
-          <span aria-hidden="true"></span>
-        </button>
         <div class="media-panel__shade"></div>
         <a
           class="scroll-cue scroll-cue--up section-up-cue"
           href="#handwerk"
           data-scroll-target="#handwerk"
-          aria-label="Zum Handwerk scrollen"
+          aria-label="Zu unserem Handwerk scrollen"
         >
           <span aria-hidden="true"></span>
         </a>
         <div class="media-panel__content media-panel__content--craft">
-          <h2 id="ueber-uns-title">Über uns</h2>
+          <h2 id="ueber-uns-title">Wir Über Uns</h2>
           <div class="section-cta-slot">
             <a class="section-cta" href={sitePath("/ueber-uns/")}>
               <span class="section-cta__label">Mehr erfahren</span>
@@ -225,7 +210,7 @@ const sectionNavigationItems = [
               class="scroll-cue"
               href="#projekte"
               data-scroll-target="#projekte"
-              aria-label="Zu Projekten scrollen"
+              aria-label="Zu unseren Projekten scrollen"
             >
               <span aria-hidden="true"></span>
             </a>
@@ -255,21 +240,17 @@ const sectionNavigationItems = [
         </video>
 
         <MotionPoster poster={projektePoster} avif={projekteMotionAvif.src} webp={includeWebpMotionFallback ? projekteMotionWebp.src : undefined} />
-
-        <button class="hero-motion-toggle is-paused" type="button" data-motion-toggle hidden aria-label="Animation abspielen">
-          <span aria-hidden="true"></span>
-        </button>
         <div class="media-panel__shade"></div>
         <a
           class="scroll-cue scroll-cue--up section-up-cue"
           href="#ueber-uns"
           data-scroll-target="#ueber-uns"
-          aria-label="Zu Über uns scrollen"
+          aria-label="Zu Wir Über Uns scrollen"
         >
           <span aria-hidden="true"></span>
         </a>
         <div class="media-panel__content media-panel__content--craft">
-          <h2 id="projekte-title">Projekte</h2>
+          <h2 id="projekte-title">Unsere Projekte</h2>
           <div class="section-cta-slot">
             <a class="section-cta" href={sitePath("/projekte/")}>
               <span class="section-cta__label">Mehr erfahren</span>
@@ -309,7 +290,7 @@ const sectionNavigationItems = [
     text-transform: uppercase;
     letter-spacing: 0.24em;
     font-size: 0.66rem;
-    font-weight: 500;
+    font-weight: 450;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -331,6 +312,7 @@ const sectionNavigationItems = [
 
   /* MotionPoster is a child component: its media must share the absolute layer. */
   .media-panel :global(.media-panel__image),
+
   .media-panel__shade {
     position: absolute;
     inset: 0;
@@ -375,62 +357,6 @@ const sectionNavigationItems = [
   [data-motion-panel].is-video-ready :global(.media-panel__image--motion-fallback) {
     visibility: hidden;
     opacity: 0;
-  }
-
-  .hero-motion-toggle {
-    position: absolute;
-    right: clamp(1rem, 3vw, 3rem);
-    bottom: clamp(1.25rem, 3vw, 2.75rem);
-    z-index: 4;
-    display: grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    padding: 0;
-    color: #ffffff;
-    background: rgba(16, 16, 16, 0.34);
-    border: 1px solid rgba(238, 238, 238, 0.42);
-    border-radius: 999px;
-    box-shadow:
-      inset 0 1px 0 rgba(238, 238, 238, 0.08),
-      0 8px 24px rgba(0, 0, 0, 0.12);
-    -webkit-backdrop-filter: blur(14px) saturate(0.8);
-    backdrop-filter: blur(14px) saturate(0.8);
-    cursor: pointer;
-    transition:
-      background 180ms ease,
-      border-color 180ms ease,
-      transform 180ms ease;
-  }
-
-  .hero-motion-toggle span {
-    position: relative;
-    width: 11px;
-    height: 14px;
-    border-left: 2px solid currentColor;
-    border-right: 2px solid currentColor;
-  }
-
-  .hero-motion-toggle.is-paused span {
-    width: 0;
-    height: 0;
-    margin-left: 2px;
-    border-top: 7px solid transparent;
-    border-right: 0;
-    border-bottom: 7px solid transparent;
-    border-left: 11px solid currentColor;
-  }
-
-  .hero-motion-toggle:hover,
-  .hero-motion-toggle:focus-visible {
-    background: rgba(238, 238, 238, 0.14);
-    border-color: rgba(238, 238, 238, 0.86);
-    transform: scale(1.04);
-  }
-
-  .hero-motion-toggle:focus-visible {
-    outline: 1px solid rgba(238, 238, 238, 0.82);
-    outline-offset: 0.35rem;
   }
 
   .media-panel__shade {
@@ -480,8 +406,8 @@ const sectionNavigationItems = [
   .media-panel h2 {
     margin: 0;
     font-family: var(--font-heading);
-    font-weight: 300;
-    letter-spacing: 0.2em;
+    font-weight: 450;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
   }
 
@@ -523,6 +449,9 @@ const sectionNavigationItems = [
   }
 
   .section-cta {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -542,12 +471,27 @@ const sectionNavigationItems = [
     white-space: nowrap;
     letter-spacing: 0.16em;
     font-size: 0.9rem;
-    font-weight: 600;
+    font-weight: 450;
     line-height: 1.25;
     transition:
-      background-color 300ms ease,
+      background-color 240ms ease,
+      border-color 240ms ease,
+      box-shadow 300ms ease,
       transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
   }
+
+  .section-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(110deg, transparent 15%, rgba(255, 255, 255, 0.5) 50%, transparent 85%);
+    transform: translateX(-110%);
+    transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+  .section-cta:hover::before,
+  .section-cta:focus-visible::before { transform: translateX(110%); }
 
   .section-cta:focus-visible {
     background: rgba(255, 255, 255, 0.92);
@@ -557,7 +501,10 @@ const sectionNavigationItems = [
 
   @media (hover: hover) and (pointer: fine) {
     .section-cta:hover {
-      transform: scale(1.04);
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.94);
+      border-color: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     }
   }
 
@@ -703,18 +650,15 @@ const sectionNavigationItems = [
       height: 44px;
     }
 
-    .hero-motion-toggle {
-      right: max(1rem, env(safe-area-inset-right, 0px));
-      bottom: max(1rem, env(safe-area-inset-bottom, 0px));
-      width: 44px;
-      height: 44px;
-    }
   }
 
   @media (max-width: 760px) and (max-height: 500px) {
     .media-panel h1 { font-size: clamp(1.9rem, 5.5vw, 2.5rem); }
     .media-panel h2 { font-size: 1.4rem; }
-    .section-cta { min-height: 48px; padding-block: 12px; }
+    .section-cta {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate; min-height: 48px; padding-block: 12px; }
     .media-panel__content--craft .scroll-cues > .scroll-cue { bottom: 1rem; }
   }
 
@@ -732,6 +676,9 @@ const sectionNavigationItems = [
 
   @media (max-width: 360px) {
     .section-cta {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
       min-width: 230px;
       padding: 17px 28px;
       font-size: 0.82rem;
@@ -740,6 +687,9 @@ const sectionNavigationItems = [
 
   @media (prefers-reduced-motion: reduce) {
     .section-cta {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
       transition: none;
     }
 
@@ -753,6 +703,13 @@ const sectionNavigationItems = [
       filter: none;
       opacity: 1;
       transform: none;
+    }
+  }
+
+  @media (max-width: 760px) {
+    /* A still composition keeps the exposed grille and wheel in the portrait crop. */
+    :global(html[data-motion="off"]) .hero :global(.media-panel__image--motion-fallback img) {
+      object-position: 27% 50%;
     }
   }
 

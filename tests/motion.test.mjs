@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
-import { watchMedia } from '../src/scripts/accessibility.js';
+import { createMotionPreference } from '../src/scripts/siteMotion.js';
 const script = await readFile(new URL('../src/scripts/homepage.js', import.meta.url), 'utf8');
 
 class Element {
@@ -42,7 +42,7 @@ function setup(reduced = false, options = {}) {
 	panel.top = 0; panel.getBoundingClientRect = () => ({ top: panel.top, bottom: panel.top + 100, height: 100 });
 	panel.querySelector = (selector) => ({ '[data-motion-video]': video, '[data-motion-image]': image, '[data-motion-fallback]': picture, '[data-motion-toggle]': toggle })[selector];
 	const document = new Element();
-	document.documentElement = { lang: 'de' };
+	document.documentElement = { lang: 'de', dataset: {} };
 	document.hidden = false; document.readyState = 'complete';
 	document.querySelector = () => null; document.querySelectorAll = () => [panel]; document.createElement = () => new Element();
 	const timers = new Map(); let timerId = 0;
@@ -53,8 +53,10 @@ function setup(reduced = false, options = {}) {
 	class Observer { constructor(callback) { intersect = callback; } observe() {} }
 	if (!options.noObserver) window.IntersectionObserver = Observer;
 	window.innerHeight = 100; window.innerWidth = options.width || 1440; window.devicePixelRatio = options.pixelRatio || 1;
-	vm.runInNewContext(script.replace(/^import .*;\n/gm, ''), { watchMedia, Promise, document, window, navigator: { connection: { saveData: options.saveData || false } }, HTMLElement: Element, HTMLVideoElement: Video, HTMLImageElement: Image, HTMLMediaElement: { HAVE_FUTURE_DATA: 3 }, IntersectionObserver: Observer });
-	return { window, video, image, sources, toggle, panel, preference, document, timers, posterSource, visible: (value, ratio = 1) => intersect([{ isIntersecting: value, intersectionRatio: value ? ratio : 0 }]) };
+	const motion = createMotionPreference(window, document);
+	toggle.addEventListener('click', () => motion.set(!motion.enabled));
+	vm.runInNewContext(script.replace(/^import .*;\n/gm, ''), { getSiteMotion: () => motion, Promise, document, window, navigator: { connection: { saveData: options.saveData || false } }, HTMLElement: Element, HTMLVideoElement: Video, HTMLImageElement: Image, HTMLMediaElement: { HAVE_FUTURE_DATA: 3 }, IntersectionObserver: Observer });
+	return { motion, window, video, image, sources, toggle, panel, preference, document, timers, posterSource, visible: (value, ratio = 1) => intersect([{ isIntersecting: value, intersectionRatio: value ? ratio : 0 }]) };
 }
 const settle = async () => { await Promise.resolve(); await Promise.resolve(); await Promise.resolve(); };
 
@@ -72,7 +74,8 @@ test('late rejection and playing events cannot restart a user-paused section', a
 	s.video.requests[0].reject(new Error('blocked')); await settle();
 	s.video.emit('error'); s.video.emit('playing');
 	assert.equal(s.video.paused, true); assert.equal(s.sources.length, 0); assert.equal(s.image.src, 'poster.jpg');
-	assert.equal(s.toggle.attributes.get('aria-label'), 'Animation abspielen');
+	assert.equal(s.motion.enabled, false);
+	assert.equal(s.panel.classes.has('is-video-ready'), false);
 });
 
 test('fallback stops offscreen, on pause and on live reduced-motion changes', async () => {

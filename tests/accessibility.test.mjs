@@ -39,7 +39,7 @@ test('explicit pointer preference survives visits without cookies and storage fa
 	choice.set(false); assert.equal(values.size, 0);
 	const blocked = systemPointerPreference(() => { throw Error('storage denied'); }); blocked.set(true); assert.equal(blocked.enabled, true);
 });
-test('fallback gallery modal traps Tab, isolates siblings, closes with Escape and restores focus', () => {
+test('fallback modal traps Tab, isolates siblings, closes with Escape and restores focus', () => {
 	const body = new Element(), shell = new Element(), main = new Element(), dialog = new Element(), close = new Element(), opener = new Element();
 	const doc = { body, activeElement: opener };
 	for (const node of [body, shell, main, dialog, close, opener]) node.ownerDocument = doc;

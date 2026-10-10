@@ -15,7 +15,7 @@ await collect(root);
 const failures = [];
 const headingJumps = [];
 let redirects = 0;
-let images = 0, galleryLinks = 0, genericAlternatives = 0;
+let images = 0;
 for (const file of files) {
 	const $ = load(await readFile(file, 'utf8'));
 	if ($('meta[http-equiv="refresh"]').length) { redirects++; continue; }
@@ -37,10 +37,6 @@ for (const file of files) {
 	$('img').each((_, node) => {
 		images++;
 		if ($(node).attr('alt') === undefined) fail('image missing alternative attribute');
-		if (/Aufnahme \d+ der Fahrzeugdokumentation|photograph \d+ in the vehicle record/i.test($(node).attr('alt') || '')) {
-			genericAlternatives++;
-			fail('generic numbered vehicle photograph alternative; describe the visible photograph');
-		}
 	});
 	$('button, a[href], input:not([type="hidden"])').each((_, node) => {
 		const el = $(node);
@@ -53,13 +49,8 @@ for (const file of files) {
 		const label = $(`label[for="${$(node).attr('id')}"]`).text().replace(/\s+/g, ' ').trim().toLowerCase();
 		if (label && !$(node).attr('aria-label').toLowerCase().includes(label)) fail('input accessible name must contain its visible label');
 	});
-	$('[data-lightbox-trigger]').each((_, node) => {
-		galleryLinks++;
-		if (node.tagName !== 'a' || $(node).attr('href') !== $(node).attr('data-lightbox-src')) fail('gallery requires a direct image link fallback');
-	});
 	if ($('[data-system-pointer]').length !== 1) fail('missing pointer preference');
 	if ($('.menu-toggle').attr('href') !== '#site-footer') fail('missing non-script navigation fallback');
-	if ($('[data-vehicle-search]').length && !$('[data-vehicle-search-status][role="status"][aria-atomic="true"]').length) fail('missing search status semantics');
 }
-console.log(JSON.stringify({ pages: files.length, redirects, images, galleryLinks, genericAlternatives, headingJumps, failures }, null, 2));
+console.log(JSON.stringify({ pages: files.length, redirects, images, headingJumps, failures }, null, 2));
 if (failures.length) process.exitCode = 1;
