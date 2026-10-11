@@ -4,7 +4,7 @@
 
 ## Seiten
 
-- [Startseite](https://bennetze.github.io/reference/): Eine schlichte, weiße Demo-Einführung mit zentriertem Hinweis ohne Unternehmensbranding und einem Link zum bestehenden Website-Entwurf. Anschließend bildfüllende Filme und Fotografien mit Zugängen zu Handwerk, Unternehmen und der fotografischen Projektübersicht.
+- [Startseite](https://bennetze.github.io/reference/start/): Bildfüllende Filme und Fotografien mit Zugängen zu Handwerk, Unternehmen und der fotografischen Projektübersicht. Die Einstiegsadresse `/` zeigt eine separate, nicht indexierte Hinweisseite mit einem Link zum Entwurf. Interne Startseitenlinks führen direkt zu `/start/`; dort beginnt die Seite mit dem Film und enthält keinen Hinweisabschnitt.
 - [Unser Handwerk](https://bennetze.github.io/reference/handwerk/): Redaktionelle Einblicke in Karosserie, Lack, Polsterei und Motorbau mit lokalen Werkstattaufnahmen und einer steuerbaren Filmsequenz.
 - [Wir Über Uns](https://bennetze.github.io/reference/ueber-uns/): Vorstellung von Mario Schrank, Anton Schrank und dem Team sowie vorhandene Kontaktinformationen und eine Standortdarstellung für Fischbach/Rhön.
 - [Unsere Projekte](https://bennetze.github.io/reference/projekte/): Drei fotografische Bildfelder für aktuelle Projekte, abgeschlossene Projekte und Fahrzeugangebote. Die Bildfelder dienen ausschließlich der gestalterischen Präsentation und verlinken keine Archive oder Fahrzeugdokumentationen.
