@@ -1,5 +1,5 @@
-/* Original white / cream / blue palette from the parent of 43c382a5. */
+/* Restored white / cream / blue palette with a deeper, more saturated blue. */
 :root {
 	--gradient-ink: #111111;
-	--gradient-editorial: linear-gradient(180deg, #ffffff 0%, #ffffff 11%, #f7eee2 18%, #f8f3ec 30%, #e9dacf 39%, #b1b6d5 47%, #8faede 54%, #80a3d1 61%, #8bb0e1 70%, #a6c6ec 82%, #ffffff 100%);
+	--gradient-editorial: linear-gradient(180deg, #ffffff 0%, #ffffff 11%, #f7eee2 18%, #f8f3ec 30%, #e9dacf 39%, #99a9d1 47%, #6493d0 54%, #4f82c0 61%, #6499d6 70%, #94b9e5 82%, #ffffff 100%);
 }
