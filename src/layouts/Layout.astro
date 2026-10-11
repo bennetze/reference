@@ -49,6 +49,7 @@ const isGitHubPagesPreview = siteStatus.developmentPreview && basePath !== '/';
 const effectiveNoindex = noindex || isGitHubPagesPreview;
 const siteUrl = Astro.site ?? Astro.url;
 const siteRootUrl = new URL(basePath, siteUrl);
+const homePageUrl = new URL(`${basePath}start/`, siteUrl);
 const pageUrl = new URL(Astro.url.pathname, siteUrl);
 const openGraphImageUrl = new URL(openGraphImage.src, siteUrl);
 const sitemapUrl = new URL(`${basePath}sitemap.xml`, siteUrl);
@@ -87,7 +88,7 @@ const jsonLdGraph: Record<string, unknown>[] = [
 		'@id': organizationId,
 		name: 'Die Oldtimermanufaktur',
 		legalName: 'DIE OLDTIMERMANUFAKTUR GmbH',
-		url: siteRootUrl.href,
+		url: homePageUrl.href,
 		logo: new URL(companyLogo.src, siteUrl).href,
 		description:
 			'Die Oldtimermanufaktur restauriert und bewahrt historische Automobile mit traditionellem Handwerk, technischer Sorgfalt und Liebe zum Detail.',
@@ -110,7 +111,7 @@ const jsonLdGraph: Record<string, unknown>[] = [
 	{
 		'@type': 'WebSite',
 		'@id': websiteId,
-		url: siteRootUrl.href,
+		url: homePageUrl.href,
 		name: 'Die Oldtimermanufaktur',
 		inLanguage: 'de-DE',
 		publisher: { '@id': organizationId },
@@ -130,7 +131,7 @@ const jsonLdGraph: Record<string, unknown>[] = [
 const breadcrumbItems = breadcrumbs ?? (
 	title
 		? [
-				{ name: 'Startseite', path: '/' },
+				{ name: 'Startseite', path: '/start/' },
 				{ name: title, path: '' },
 			]
 		: []

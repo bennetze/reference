@@ -117,4 +117,4 @@ createServer(async (req, res) => {
 		}
 		res.setHeader('Content-Length', bytes.length); res.end(bytes);
 	} catch (error) { res.writeHead(400); res.end(error.message); }
-}).listen(port, '127.0.0.1', () => console.log(`Playback harness: http://localhost:${port}${base}/?motion-test=normal — results: ${output}`));
+}).listen(port, '127.0.0.1', () => console.log(`Playback harness: http://localhost:${port}${base}/start/?motion-test=normal — results: ${output}`));

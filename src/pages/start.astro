@@ -1,0 +1,717 @@
+---
+import MotionPoster from "../components/MotionPoster.astro";
+import Layout from "../layouts/Layout.astro";
+import SiteChrome from "../components/SiteChrome.astro";
+import SectionNavigation from "../components/SectionNavigation.astro";
+import heroSiteMotionAvif from "../assets/oldtimer/hero-site-motion.avif";
+import heroSiteMotionWebp from "../assets/oldtimer/hero-site-motion.webp";
+import heroSiteMp4 from "../assets/oldtimer/hero-site.mp4";
+import heroSiteMobileMp4 from "../assets/oldtimer/hero-site-mobile.mp4";
+import heroSiteRevealPoster from "../assets/oldtimer/hero-site-reveal-poster.jpg";
+import heroSiteWebm from "../assets/oldtimer/hero-site.webm";
+import handwerkMotionAvif from "../assets/oldtimer/handwerk-motion.avif";
+import handwerkMotionWebp from "../assets/oldtimer/handwerk-motion.webp";
+import handwerkMp4 from "../assets/oldtimer/handwerk.mp4";
+import handwerkMobileMp4 from "../assets/oldtimer/handwerk-mobile.mp4";
+import handwerkPoster from "../assets/oldtimer/handwerk-poster.jpg";
+import handwerkWebm from "../assets/oldtimer/handwerk.webm";
+import ueberUnsMotionAvif from "../assets/oldtimer/ueberuns-motion.avif";
+import ueberUnsMotionWebp from "../assets/oldtimer/ueberuns-motion.webp";
+import ueberUnsMp4 from "../assets/oldtimer/ueberuns.mp4";
+import ueberUnsMobileMp4 from "../assets/oldtimer/ueberuns-mobile.mp4";
+import ueberUnsPoster from "../assets/oldtimer/ueberuns-poster.jpg";
+import ueberUnsWebm from "../assets/oldtimer/ueberuns.webm";
+import projekteMotionAvif from "../assets/oldtimer/projekte-motion.avif";
+import projekteMotionWebp from "../assets/oldtimer/projekte-motion.webp";
+import projekteMp4 from "../assets/oldtimer/projekte.mp4";
+import projekteMobileMp4 from "../assets/oldtimer/projekte-mobile.mp4";
+import projektePoster from "../assets/oldtimer/projekte-poster.jpg";
+import projekteWebm from "../assets/oldtimer/projekte.webm";
+
+const basePath = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const includeWebpMotionFallback = import.meta.env.BASE_URL === "/";
+const sitePath = (path) => {
+  if (path === "/") {
+    return basePath;
+  }
+
+  if (path.startsWith("/#")) {
+    return `${basePath}${path.slice(1)}`;
+  }
+
+  if (path.startsWith("/")) {
+    return `${basePath}${path.slice(1)}`;
+  }
+
+  return path;
+};
+
+const sectionNavigationItems = [
+  { id: "start", label: "Start" },
+  { id: "handwerk", label: "Unser Handwerk" },
+  { id: "ueber-uns", label: "Wir Über Uns" },
+  { id: "projekte", label: "Unsere Projekte" },
+];
+---
+
+<Layout
+  title="Website-Demonstration"
+  description="Eine Webdesign-Demonstration für Die Oldtimermanufaktur. Keine offizielle Unternehmenswebsite: Entdecken Sie den gestalterischen Entwurf mit Fotografie, Film und Handwerk."
+  openGraphImage={heroSiteRevealPoster}
+  openGraphImageAlt="Historischer Rennwagen unter einer hellen Abdeckung in der Werkstatt."
+  dateModified="2026-10-11"
+>
+  <SiteChrome>
+    <main id="main-content" tabindex="-1">
+      <SectionNavigation items={sectionNavigationItems} />
+
+      <section
+        class="media-panel hero"
+        id="start"
+        tabindex="-1"
+        aria-labelledby="hero-title"
+        data-hero
+        data-motion-panel
+      >
+        <video
+          class="media-panel__image"
+          muted
+          loop
+          playsinline
+          webkit-playsinline
+          preload="none"
+          disablepictureinpicture
+          data-motion-video
+          aria-hidden="true"
+        >
+          <source data-motion-src={heroSiteMp4} data-motion-mobile-src={heroSiteMobileMp4} type="video/mp4" />
+          <source
+            data-motion-src={heroSiteWebm}
+            type='video/webm; codecs="av01.0.08M.08"'
+          />
+        </video>
+        <MotionPoster poster={heroSiteRevealPoster} avif={heroSiteMotionAvif.src} webp={includeWebpMotionFallback ? heroSiteMotionWebp.src : undefined} first />
+        <div class="media-panel__shade"></div>
+        <div class="media-panel__content media-panel__content--hero">
+          <h1 id="hero-title">
+            Wir bewahren <span class="hero-title__word"
+              >Geschichte<span class="hero-title__letter" data-hero-title-letter
+                ><span
+                  class="hero-title__letter-glyph"
+                  data-hero-title-letter-glyph>(N)</span
+                ></span
+              ></span
+            >
+          </h1>
+          <a
+            class="scroll-cue"
+            href="#handwerk"
+            data-scroll-target="#handwerk"
+            aria-label="Zu unserem Handwerk scrollen"
+          >
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+      </section>
+
+      <section
+        class="media-panel craft"
+        id="handwerk"
+        aria-labelledby="craft-title"
+        data-motion-panel
+      >
+        <video
+          class="media-panel__image"
+          muted
+          loop
+          playsinline
+          webkit-playsinline
+          preload="none"
+          disablepictureinpicture
+          data-motion-video
+          aria-hidden="true"
+        >
+          <source data-motion-src={handwerkMp4} data-motion-mobile-src={handwerkMobileMp4} type="video/mp4" />
+          <source
+            data-motion-src={handwerkWebm}
+            type='video/webm; codecs="av01.0.08M.08"'
+          />
+        </video>
+        <MotionPoster poster={handwerkPoster} avif={handwerkMotionAvif.src} webp={includeWebpMotionFallback ? handwerkMotionWebp.src : undefined} />
+        <div class="media-panel__shade"></div>
+        <a
+          class="scroll-cue scroll-cue--up section-up-cue"
+          href="#start"
+          data-scroll-target="#start"
+          aria-label="Zum Start scrollen"
+        >
+          <span aria-hidden="true"></span>
+        </a>
+        <div class="media-panel__content media-panel__content--craft">
+          <h2 id="craft-title">Unser Handwerk</h2>
+          <div class="section-cta-slot">
+            <a class="section-cta" href={sitePath("/handwerk/")}>
+              <span class="section-cta__label">Mehr erfahren</span>
+            </a>
+          </div>
+          <div class="scroll-cues" role="group" aria-label="Abschnitt wechseln">
+            <a
+              class="scroll-cue"
+              href="#ueber-uns"
+              data-scroll-target="#ueber-uns"
+              aria-label="Zu Wir Über Uns scrollen"
+            >
+              <span aria-hidden="true"></span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="media-panel editorial-panel"
+        id="ueber-uns"
+        aria-labelledby="ueber-uns-title"
+        data-motion-panel
+      >
+        <video
+          class="media-panel__image"
+          muted
+          loop
+          playsinline
+          webkit-playsinline
+          preload="none"
+          disablepictureinpicture
+          data-motion-video
+          aria-hidden="true"
+        >
+          <source data-motion-src={ueberUnsMp4} data-motion-mobile-src={ueberUnsMobileMp4} type="video/mp4" />
+          <source data-motion-src={ueberUnsWebm} type="video/webm" />
+        </video>
+
+        <MotionPoster poster={ueberUnsPoster} avif={ueberUnsMotionAvif.src} webp={includeWebpMotionFallback ? ueberUnsMotionWebp.src : undefined} />
+        <div class="media-panel__shade"></div>
+        <a
+          class="scroll-cue scroll-cue--up section-up-cue"
+          href="#handwerk"
+          data-scroll-target="#handwerk"
+          aria-label="Zu unserem Handwerk scrollen"
+        >
+          <span aria-hidden="true"></span>
+        </a>
+        <div class="media-panel__content media-panel__content--craft">
+          <h2 id="ueber-uns-title">Wir Über Uns</h2>
+          <div class="section-cta-slot">
+            <a class="section-cta" href={sitePath("/ueber-uns/")}>
+              <span class="section-cta__label">Mehr erfahren</span>
+            </a>
+          </div>
+          <div class="scroll-cues" role="group" aria-label="Abschnitt wechseln">
+            <a
+              class="scroll-cue"
+              href="#projekte"
+              data-scroll-target="#projekte"
+              aria-label="Zu unseren Projekten scrollen"
+            >
+              <span aria-hidden="true"></span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="media-panel editorial-panel"
+        id="projekte"
+        aria-labelledby="projekte-title"
+        data-motion-panel
+      >
+        <video
+          class="media-panel__image"
+          muted
+          loop
+          playsinline
+          webkit-playsinline
+          preload="none"
+          disablepictureinpicture
+          data-motion-video
+          aria-hidden="true"
+        >
+          <source data-motion-src={projekteMp4} data-motion-mobile-src={projekteMobileMp4} type="video/mp4" />
+          <source data-motion-src={projekteWebm} type="video/webm" />
+        </video>
+
+        <MotionPoster poster={projektePoster} avif={projekteMotionAvif.src} webp={includeWebpMotionFallback ? projekteMotionWebp.src : undefined} />
+        <div class="media-panel__shade"></div>
+        <a
+          class="scroll-cue scroll-cue--up section-up-cue"
+          href="#ueber-uns"
+          data-scroll-target="#ueber-uns"
+          aria-label="Zu Wir Über Uns scrollen"
+        >
+          <span aria-hidden="true"></span>
+        </a>
+        <div class="media-panel__content media-panel__content--craft">
+          <h2 id="projekte-title">Unsere Projekte</h2>
+          <div class="section-cta-slot">
+            <a class="section-cta" href={sitePath("/projekte/")}>
+              <span class="section-cta__label">Mehr erfahren</span>
+            </a>
+          </div>
+          <div class="scroll-cues" role="group" aria-label="Abschnitt wechseln">
+            <a
+              class="scroll-cue"
+              href="#site-footer"
+              data-scroll-target="#site-footer"
+              aria-label="Zum Footer scrollen"
+            >
+              <span aria-hidden="true"></span>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="../scripts/homepage.js"></script>
+  </SiteChrome>
+</Layout>
+
+<style>
+  :global(html),
+  :global(body),
+  main {
+    background: #101010;
+  }
+
+  .scroll-cue {
+    color: currentColor;
+    background: transparent;
+    border: 0;
+    text-decoration: none;
+    touch-action: manipulation;
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    font-size: 0.66rem;
+    font-weight: 450;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+  }
+
+  .media-panel {
+    position: relative;
+    display: grid;
+    --panel-edge-cue-offset: clamp(5.25rem, 12vh, 8.5rem);
+    --action-edge: clamp(1.75rem, 4vh, 2.5rem);
+    height: 100vh;
+    height: 100svh;
+    grid-template-rows: minmax(0, 1fr);
+    scroll-margin-top: 0;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* MotionPoster is a child component: its media must share the absolute layer. */
+  .media-panel :global(.media-panel__image),
+
+  .media-panel__shade {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .media-panel :global(.media-panel__image) {
+    z-index: 0;
+    object-fit: cover;
+    transform: scale(1.015);
+  }
+
+  .media-panel :global(.media-panel__image--motion-fallback) {
+    visibility: visible;
+    opacity: 1;
+    transition:
+      opacity 220ms ease,
+      visibility 220ms ease;
+  }
+
+  .media-panel :global(.media-panel__image--motion-fallback img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  [data-motion-panel] video.media-panel__image {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 220ms ease,
+      visibility 220ms ease;
+  }
+
+  [data-motion-panel].is-video-ready video.media-panel__image {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  [data-motion-panel].is-video-ready :global(.media-panel__image--motion-fallback) {
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  .media-panel__shade {
+    z-index: 1;
+    background: rgba(12, 12, 12, 0.25);
+    pointer-events: none;
+  }
+
+  #projekte .media-panel__image {
+    object-position: 50% 48%;
+  }
+
+  #ueber-uns .media-panel__image {
+    object-position: 50% 44%;
+  }
+
+  main { color: #ffffff; }
+
+  .media-panel__content {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    width: min(860px, calc(100% - 2rem));
+    margin: 0 auto;
+    min-height: 0;
+    padding: calc(var(--site-header-height, 104px) + 1rem) 0 calc(clamp(7rem, 16vh, 10rem) + clamp(1rem, 3vh, 2rem));
+    padding-bottom: calc(clamp(7rem, 16svh, 10rem) + clamp(1rem, 3svh, 2rem));
+    text-align: center;
+    transition:
+      opacity 360ms ease,
+      transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .media-panel__content--craft {
+    position: static;
+    align-items: center;
+    justify-content: flex-end;
+    width: min(780px, calc(100% - 2rem));
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .media-panel :is(h1, h2) {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-weight: 450;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  #hero-title {
+    width: max-content;
+    max-width: calc(100vw - 2rem);
+    font-size: clamp(1.7rem, 3.1vw, 3.75rem);
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+
+  .hero-title__word {
+    white-space: nowrap;
+  }
+
+  .hero-title__letter {
+    --hero-title-letter-width: 1.7em;
+
+    display: inline-block;
+    width: var(--hero-title-letter-width);
+    vertical-align: baseline;
+  }
+
+  .hero-title__letter-glyph {
+    display: inline-block;
+    letter-spacing: 0.04em;
+  }
+
+  .media-panel :is(h1, h2) {
+    max-width: 820px;
+    font-size: clamp(1.5rem, 2.75vw, 3.25rem);
+    line-height: 1.12;
+  }
+
+  /* Keep each button directly beneath its heading with a shared gap. */
+  .section-cta-slot {
+    flex-shrink: 0;
+    margin-top: clamp(1.25rem, 2.2vw, 1.8rem);
+  }
+
+  .section-cta {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 264px;
+    min-height: 60px;
+    margin: 0;
+    padding: 17px 34px;
+    color: #171717;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid transparent;
+    border-radius: 999px;
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    text-decoration: none;
+    touch-action: manipulation;
+    text-transform: uppercase;
+    white-space: nowrap;
+    letter-spacing: 0.16em;
+    font-size: 0.9rem;
+    font-weight: 450;
+    line-height: 1.25;
+    transition:
+      background-color 240ms ease,
+      border-color 240ms ease,
+      box-shadow 300ms ease,
+      transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .section-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(110deg, transparent 15%, rgba(255, 255, 255, 0.5) 50%, transparent 85%);
+    transform: translateX(-110%);
+    transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+  .section-cta:hover::before,
+  .section-cta:focus-visible::before { transform: translateX(110%); }
+
+  .section-cta:focus-visible {
+    background: rgba(255, 255, 255, 0.92);
+    outline: 2px solid #ffffff;
+    outline-offset: 5px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .section-cta:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.94);
+      border-color: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  .section-cta:active {
+    background: rgba(255, 255, 255, 0.86);
+    transform: none;
+  }
+
+  /* Anchor navigation to the panel edge independently of the centered content. */
+  .media-panel__content--craft .scroll-cues > .scroll-cue {
+    position: absolute;
+    bottom: calc(var(--action-edge) + clamp(1rem, 2.5vh, 1.5rem));
+    bottom: calc(var(--action-edge) + clamp(1rem, 2.5svh, 1.5rem));
+    left: calc(50% - 22px);
+  }
+
+  .scroll-cue {
+    cursor: pointer;
+    pointer-events: auto;
+    width: 44px;
+    height: 44px;
+    color: #ffffff;
+    opacity: 0.72;
+    transition:
+      opacity 180ms ease,
+      transform 180ms ease;
+  }
+
+  .scroll-cue span {
+    width: 10px;
+    height: 10px;
+    border-right: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+    transform: rotate(45deg) translate(-2px, -2px);
+  }
+
+  .scroll-cues {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: inline-grid;
+    grid-template-columns: 44px;
+    gap: 0.75rem;
+    margin: 0;
+  }
+
+  .media-panel__content--hero > .scroll-cue {
+    position: absolute;
+    bottom: var(--action-edge);
+    left: calc(50% - 22px);
+  }
+
+  .scroll-cue--up span {
+    transform: rotate(225deg) translate(-2px, -2px);
+  }
+
+  .section-up-cue {
+    position: absolute;
+    top: max(var(--panel-edge-cue-offset), calc(var(--site-header-height, 104px) + 0.5rem));
+    left: 50%;
+    z-index: 4;
+    transform: translateX(-50%);
+  }
+
+  .scroll-cue:hover,
+  .scroll-cue:focus-visible {
+    color: #ffffff;
+    opacity: 1;
+    transform: translateY(4px);
+  }
+
+  .scroll-cue--up:hover,
+  .scroll-cue--up:focus-visible {
+    transform: translateY(-4px);
+  }
+
+  .section-up-cue:hover,
+  .section-up-cue:focus-visible {
+    transform: translateX(-50%) translateY(-4px);
+  }
+
+  .scroll-cue:focus-visible {
+    outline: 1px solid rgba(238, 238, 238, 0.62);
+    outline-offset: 0.35rem;
+  }
+
+  @media (max-width: 1100px) {
+    #hero-title {
+      font-size: clamp(1.62rem, 5vw, 3.4rem);
+    }
+
+    .hero-title__word {
+      display: block;
+    }
+  }
+
+  @supports (height: 1svh) {
+    .media-panel { --action-edge: clamp(1.75rem, 4svh, 2.5rem); }
+    @media (max-width: 760px) {
+      .media-panel { --panel-edge-cue-offset: clamp(7.75rem, 18svh, 10rem); }
+    }
+  }
+
+  @media (max-width: 760px) {
+    .media-panel {
+      --panel-edge-cue-offset: clamp(7.75rem, 18vh, 10rem);
+    }
+
+    .section-up-cue {
+      top: calc(var(--site-header-height, 104px) + 0.5rem);
+    }
+
+    .media-panel__content,
+    .media-panel__content--craft {
+      width: min(100% - 2rem, 560px);
+      margin: 0 auto;
+      align-items: center;
+      justify-content: flex-end;
+      text-align: center;
+    }
+
+    #hero-title {
+      width: 100%;
+      max-width: 900px;
+      font-size: clamp(1.9rem, 8.8vw, 3.25rem);
+      line-height: 1.1;
+      letter-spacing: 0.055em;
+      white-space: normal;
+    }
+
+    .hero-title__word:lang(en) {
+      white-space: normal;
+    }
+
+    .media-panel :is(h1, h2) {
+      font-size: clamp(1.48rem, 7vw, 2.05rem);
+      line-height: 1.14;
+      letter-spacing: 0.12em;
+    }
+
+    .scroll-cue {
+      width: 44px;
+      height: 44px;
+    }
+
+  }
+
+  @media (max-width: 760px) and (max-height: 500px) {
+    #hero-title { font-size: clamp(1.9rem, 5.5vw, 2.5rem); }
+    .media-panel :is(h1, h2) { font-size: 1.4rem; }
+    .section-cta {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate; min-height: 48px; padding-block: 12px; }
+    .media-panel__content--craft .scroll-cues > .scroll-cue { bottom: 1rem; }
+  }
+
+  @media (max-height: 500px) {
+    .section-up-cue {
+      left: clamp(1.5rem, 3vw, 3rem);
+      transform: none;
+    }
+
+    .section-up-cue:hover,
+    .section-up-cue:focus-visible {
+      transform: translateY(-4px);
+    }
+  }
+
+  @media (max-width: 360px) {
+    .section-cta {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+      min-width: 230px;
+      padding: 17px 28px;
+      font-size: 0.82rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section-cta {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+      transition: none;
+    }
+
+    .section-cta:hover {
+      transform: none;
+    }
+
+    .hero-title__letter {
+      animation: none;
+      width: var(--hero-title-letter-width);
+      filter: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (max-width: 760px) {
+    /* A still composition keeps the exposed grille and wheel in the portrait crop. */
+    :global(html[data-motion="off"]) .hero :global(.media-panel__image--motion-fallback img) {
+      object-position: 27% 50%;
+    }
+  }
+
+</style>

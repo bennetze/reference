@@ -1,23 +1,16 @@
-<section class="demo-intro" id="demo" aria-labelledby="demo-title">
+---
+const basePath = import.meta.env.BASE_URL.endsWith('/')
+	? import.meta.env.BASE_URL
+	: `${import.meta.env.BASE_URL}/`;
+---
+
+<section class="demo-intro" aria-labelledby="demo-title">
 	<div class="demo-intro__copy">
 		<h1 id="demo-title">Dies ist eine Website-Demo.</h1>
 		<p>Diese Website dient der Präsentation eines Designentwurfs und ist keine offizielle Unternehmenswebsite.</p>
-		<a class="demo-intro__enter" href="#start">Demo ansehen</a>
+		<a class="demo-intro__enter" href={`${basePath}start/`}>Demo ansehen</a>
 	</div>
 </section>
-
-<script>
-	const introduction = document.querySelector('.demo-intro');
-	if (introduction) {
-		const update = () => {
-			document.documentElement.toggleAttribute('data-demo-entered', introduction.getBoundingClientRect().bottom <= 1);
-		};
-		window.addEventListener('scroll', update, { passive: true });
-		window.addEventListener('resize', update);
-		window.addEventListener('pageshow', update);
-		update();
-	}
-</script>
 
 <style>
 	.demo-intro {
@@ -62,11 +55,6 @@
 	}
 	.demo-intro__enter:hover { background: #353535; }
 	.demo-intro__enter:focus-visible { outline: 2px solid #171717; outline-offset: 6px; }
-	/* Keep the example's branding and navigation inside the example experience. */
-	:global(html:not([data-demo-entered]):not(:has(#start:target)) .site-shell--home .site-header),
-	:global(html:not([data-demo-entered]):not(:has(#start:target)) .site-shell--home .section-indicator) {
-		visibility: hidden;
-	}
 	@media (prefers-reduced-motion: reduce) {
 		.demo-intro__enter { transition: none; }
 	}

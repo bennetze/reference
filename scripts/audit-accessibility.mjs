@@ -49,8 +49,8 @@ for (const file of files) {
 		const label = $(`label[for="${$(node).attr('id')}"]`).text().replace(/\s+/g, ' ').trim().toLowerCase();
 		if (label && !$(node).attr('aria-label').toLowerCase().includes(label)) fail('input accessible name must contain its visible label');
 	});
-	if ($('[data-system-pointer]').length !== 1) fail('missing pointer preference');
-	if ($('.menu-toggle').attr('href') !== '#site-footer') fail('missing non-script navigation fallback');
+	if (!$('.demo-intro').length && $('[data-system-pointer]').length !== 1) fail('missing pointer preference');
+	if (!$('.demo-intro').length && $('.menu-toggle').attr('href') !== '#site-footer') fail('missing non-script navigation fallback');
 }
 console.log(JSON.stringify({ pages: files.length, redirects, images, headingJumps, failures }, null, 2));
 if (failures.length) process.exitCode = 1;

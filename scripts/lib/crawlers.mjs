@@ -4,7 +4,7 @@ export const productionOrigin = 'https://www.oldtimermanufaktur.de';
 const escapeXml = value => value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&apos;');
 
 export function sitemapEntries() {
-	return ['/', '/ueber-uns/', '/handwerk/', '/projekte/'].map(path => [path, pageModified(path)]);
+	return ['/start/', '/ueber-uns/', '/handwerk/', '/projekte/'].map(path => [path, pageModified(path)]);
 }
 
 export function renderSitemap(entries) {

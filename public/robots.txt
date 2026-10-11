@@ -1,4 +1,4 @@
-# Geprüft am 2026-10-11: Website-Demonstration mit Demo-Einführung, ohne Fahrzeugarchive;
+# Geprüft am 2026-10-11: Website-Demonstration mit separater Hinweisseite, ohne Fahrzeugarchive;
 # lokale Medien und bestehende Crawler-Berechtigungen bleiben erhalten.
 # Rechtevorbehalt für Text und Data Mining nach § 44b Abs. 3 UrhG und
 # Art. 4 Abs. 3 Richtlinie (EU) 2019/790: Eine Nutzung der Inhalte für
@@ -59,7 +59,7 @@ Allow: /
 
 # Normale und bislang unbekannte Crawler dürfen die öffentlichen Seiten lesen.
 # Dies schließt die kanonischen Seiten unter /handwerk/, /ueber-uns/ sowie die
-# fotografische Übersicht unter /projekte/ ein. Rechtliche Seiten und Fehlerseiten
+# fotografische Übersicht unter /projekte/ ein. Hinweisseite, rechtliche Seiten und Fehlerseiten
 # bleiben per Metadaten noindex.
 # Der oben erklärte Rechtevorbehalt bleibt davon unberührt.
 User-agent: *

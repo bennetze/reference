@@ -12,7 +12,7 @@ const records = [];
 let cacheMode = 'cold';
 const suites = new Map();
 const types = { '.html':'text/html; charset=utf-8', '.js':'text/javascript', '.css':'text/css', '.woff2':'font/woff2', '.webp':'image/webp', '.jpg':'image/jpeg', '.png':'image/png', '.avif':'image/avif', '.svg':'image/svg+xml', '.mp4':'video/mp4', '.webm':'video/webm' };
-const routes = ['/', '/handwerk/', '/ueber-uns/', '/projekte/', '/impressum/', '/datenschutz/', '/404.html'];
+const routes = ['/', '/start/', '/handwerk/', '/ueber-uns/', '/projekte/', '/impressum/', '/datenschutz/', '/404.html'];
 const median = values => { const sorted=values.filter(Number.isFinite).sort((a,b)=>a-b); return sorted.length ? sorted[Math.floor(sorted.length/2)] : null; };
 function summary() {
  const groups = new Map();

@@ -20,7 +20,7 @@ async function collect(dir) {
 	}
 }
 await collect(root);
-const expected = ['404.html', 'index.html', 'handwerk/index.html', 'ueber-uns/index.html', 'projekte/index.html', 'impressum/index.html', 'datenschutz/index.html'];
+const expected = ['start/index.html', '404.html', 'index.html', 'handwerk/index.html', 'ueber-uns/index.html', 'projekte/index.html', 'impressum/index.html', 'datenschutz/index.html'];
 assert.deepEqual(files.map(file => file.slice(root.length + 1)).sort(), expected.sort(), 'Only retained showcase routes may be published.');
 const imageCache = new Map();
 const sitemap = load(await readFile(join(root, 'sitemap.xml'), 'utf8'), { xmlMode: true });
@@ -50,6 +50,16 @@ for (const file of files) {
 	if ($('.projects-triptych').length) {
 		assert.equal($('.projects-triptych > section').length, 3);
 		assert.equal($('.projects-triptych a,.projects-triptych [tabindex]').length, 0, `${file}: project panels are noninteractive`);
+	}
+	if (file === join(root, 'index.html')) {
+		assert.equal($('.demo-intro').length, 1, 'The entry document is the disclosure.');
+		assert.equal($('.demo-intro__enter').attr('href'), `${base}start/`);
+		assert.match($('meta[name="robots"]').attr('content'), /noindex/);
+		assert.equal($('video').length, 0);
+	}
+	if (file === join(root, 'start/index.html')) {
+		assert.equal($('.demo-intro').length, 0, 'The homepage has no disclosure section.');
+		assert.equal($('main > section').first().attr('id'), 'start');
 	}
 	const policy = $('meta[http-equiv="content-security-policy"]').attr('content');
 	assert.ok(policy, `${file}: missing CSP`);
@@ -120,7 +130,7 @@ for (const file of files) {
 			await access(join(root, new URL(value, origin).pathname.slice(base.length)));
 		}
 	}
-	assert.equal($('[data-site-motion][role="switch"]').length, 1, 'One shared motion switch per page.');
+	assert.equal($('[data-site-motion][role="switch"]').length, file === join(root, 'index.html') ? 0 : 1, 'One shared motion switch per page.');
 	$('[data-motion-panel]').each((_, panel) => {
 		assert.equal($(panel).find('[data-motion-toggle]').length, 0);
 		assert.equal($(panel).find('video source[src]').length, 0, 'Media sources wait for eligible playback.');

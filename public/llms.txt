@@ -4,7 +4,7 @@
 
 ## Seiten
 
-- [Startseite](https://www.oldtimermanufaktur.de/): Eine schlichte, weiße Demo-Einführung mit zentriertem Hinweis ohne Unternehmensbranding und einem Link zum bestehenden Website-Entwurf. Anschließend bildfüllende Filme und Fotografien mit Zugängen zu Handwerk, Unternehmen und der fotografischen Projektübersicht.
+- [Startseite](https://www.oldtimermanufaktur.de/start/): Bildfüllende Filme und Fotografien mit Zugängen zu Handwerk, Unternehmen und der fotografischen Projektübersicht. Die Einstiegsadresse `/` zeigt eine separate, nicht indexierte Hinweisseite mit einem Link zum Entwurf. Interne Startseitenlinks führen direkt zu `/start/`; dort beginnt die Seite mit dem Film und enthält keinen Hinweisabschnitt.
 - [Unser Handwerk](https://www.oldtimermanufaktur.de/handwerk/): Redaktionelle Einblicke in Karosserie, Lack, Polsterei und Motorbau mit lokalen Werkstattaufnahmen und einer steuerbaren Filmsequenz.
 - [Wir Über Uns](https://www.oldtimermanufaktur.de/ueber-uns/): Vorstellung von Mario Schrank, Anton Schrank und dem Team sowie vorhandene Kontaktinformationen und eine Standortdarstellung für Fischbach/Rhön.
 - [Unsere Projekte](https://www.oldtimermanufaktur.de/projekte/): Drei fotografische Bildfelder für aktuelle Projekte, abgeschlossene Projekte und Fahrzeugangebote. Die Bildfelder dienen ausschließlich der gestalterischen Präsentation und verlinken keine Archive oder Fahrzeugdokumentationen.

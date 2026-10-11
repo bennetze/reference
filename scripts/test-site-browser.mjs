@@ -8,7 +8,7 @@ const site = (process.env.SITE_URL || 'http://localhost:4321').replace(/\/$/, ''
 const output = process.env.SCREENSHOT_DIR;
 if (output) await mkdir(output, { recursive: true });
 const results = [], unavailable = [];
-const routes = ['', 'handwerk/', 'ueber-uns/', 'projekte/', 'impressum/', 'datenschutz/', '404.html'];
+const routes = ['start/', 'handwerk/', 'ueber-uns/', 'projekte/', 'impressum/', 'datenschutz/', '404.html'];
 for (const name of (process.env.BROWSERS || 'chromium,firefox,webkit').split(',')) {
 	let browser;
 	try { browser = await engines[name].launch({ headless: true, timeout: 15000 }); }
@@ -23,6 +23,12 @@ for (const name of (process.env.BROWSERS || 'chromium,firefox,webkit').split(','
 				page.on('pageerror', error => errors.push(error.message));
 				page.on('response', response => { if (response.status() >= 400 && !/404(?:\.html|\/)/.test(new URL(response.url()).pathname)) badResponses.push(`${response.status()} ${response.url()}`); });
 				await page.addInitScript(() => { window.cspFailures = []; document.addEventListener('securitypolicyviolation', event => window.cspFailures.push(event.violatedDirective)); });
+				await page.goto(`${site}/`, { waitUntil: 'domcontentloaded' });
+				await page.waitForURL(`${site}/`);
+				assert.equal(await page.locator('.demo-intro').isVisible(), true);
+				await page.locator('.demo-intro__enter').click();
+				await page.waitForURL(`${site}/start/`);
+				assert.equal(await page.locator('.demo-intro').count(), 0);
 				for (const route of routes) {
 					const label = `${name} ${width}x${height} de /${route}`;
 					try {
@@ -40,17 +46,10 @@ for (const name of (process.env.BROWSERS || 'chromium,firefox,webkit').split(','
 							assert.match(await page.locator('meta[name="robots"]').getAttribute('content'), /noindex/);
 							assert.equal(await page.locator('link[rel="canonical"],script[type="application/ld+json"]').count(), 0);
 						}
-						if (!route) {
-							assert.equal(await page.locator('.demo-intro').isVisible(), true);
-							assert.equal(await page.locator('.site-header').isVisible(), false);
-							assert.match(await page.locator('#demo-title').innerText(), /Website-Demo/);
-							if (output && name === 'chromium') await page.screenshot({ caret: 'initial', path: resolve(output, `${name}-${width}-${height}-de-disclosure.png`) });
-							await page.locator('.demo-intro__enter').focus(); await page.keyboard.press('Enter');
-							await page.waitForFunction(() => Math.abs(document.querySelector('#start').getBoundingClientRect().top) < 2);
-							assert.equal(await page.locator('.site-header').isVisible(), true, 'header appears after entry');
-							await page.reload({ waitUntil: 'domcontentloaded' });
-							await page.waitForFunction(() => Math.abs(document.querySelector('#start').getBoundingClientRect().top) < 2);
-							assert.equal(await page.locator('.site-header').isVisible(), true, 'entry survives reload');
+						if (route === 'start/') {
+							assert.equal(await page.locator('.demo-intro').count(), 0, 'disclosure is a separate document');
+							assert.equal(await page.locator('.site-header').isVisible(), true);
+							assert.equal(await page.locator('#start').evaluate(el => el.offsetTop), 0, 'homepage starts at the video');
 						}
 						assert.equal(await page.locator('[data-language],.language-switch').count(), 0);
 						await page.locator('.menu-toggle').focus(); await page.keyboard.press('Enter');
@@ -74,7 +73,15 @@ for (const name of (process.env.BROWSERS || 'chromium,firefox,webkit').split(','
 							await page.waitForTimeout(100);
 							assert.equal(await page.locator(target).count(), 1, `anchor ${target}`);
 						}
-						if (route === '404.html') { await page.locator('.not-found__link').click(); await page.waitForURL(`${site}/`); assert.equal(await page.locator('.demo-intro').isVisible(), true, '404 home link'); }
+						if (route === '404.html') { await page.locator('.not-found__link').click(); await page.waitForURL(`${site}/start/`); await page.waitForFunction(() => Math.abs(document.querySelector('#start').getBoundingClientRect().top) < 2); assert.equal(await page.locator('.site-header').isVisible(), true, '404 home link skips disclosure'); }
+						for (const selector of ['.brand', '.footer-brand']) {
+							await page.goto(`${site}/${route}`, { waitUntil: 'domcontentloaded' });
+							assert.equal(await page.locator(selector).getAttribute('href'), `${new URL(site).pathname.replace(/\/$/, '')}/start/`);
+							await page.locator(selector).click();
+							await page.waitForFunction(() => Math.abs(document.querySelector('#start')?.getBoundingClientRect().top ?? Infinity) < 2);
+							assert.equal(await page.locator('.site-header').isVisible(), true, 'logo skips disclosure');
+						}
+						await page.goto(`${site}/${route}`, { waitUntil: 'domcontentloaded' });
 						if (route === 'projekte/') assert.equal(await page.locator('.projects-triptych a,.projects-triptych [tabindex]').count(), 0);
 						if (['impressum/', 'datenschutz/'].includes(route)) assert.equal(await page.locator('main > *').count(), 1);
 						assert.deepEqual(errors, [], 'JS errors'); assert.deepEqual(badResponses, [], 'failed assets'); assert.deepEqual(await page.evaluate(() => window.cspFailures), [], 'CSP');
@@ -87,13 +94,18 @@ for (const name of (process.env.BROWSERS || 'chromium,firefox,webkit').split(','
 		const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
 		try {
 			const page = await context.newPage();
+			await page.goto(`${site}/`, { waitUntil: 'domcontentloaded' });
+			assert.equal(await page.locator('.demo-intro').isVisible(), true);
+			await page.locator('.demo-intro__enter').click();
+			await page.waitForURL(`${site}/start/`);
+			assert.equal(await page.locator('.demo-intro').count(), 0);
 			for (const route of routes) {
 				const label = `${name} no-JS de /${route}`;
 				try {
 					await page.goto(`${site}/${route}`, { waitUntil: 'domcontentloaded' });
 					assert.equal(await page.locator('html').getAttribute('lang'), 'de');
 					assert.ok(await page.locator('main h1').first().innerText());
-					if (!route) { await page.locator('.demo-intro__enter').click(); assert.equal(await page.locator('.site-header').isVisible(), true); }
+					if (route === 'start/') { assert.equal(await page.locator('.demo-intro').count(), 0); assert.equal(await page.locator('.site-header').isVisible(), true); }
 					for (const link of await page.locator('.footer-primary a,.footer-legal a').all()) assert.equal(await link.isVisible(), true);
 					results.push({ label, pass: true }); console.log(`PASS ${label}`);
 				} catch (error) { results.push({ label, pass: false, error: error.message }); console.log(`FAIL ${label}: ${error.message}`); }
