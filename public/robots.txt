@@ -1,4 +1,4 @@
-# Geprüft am 2026-10-10: Website-Demonstration ohne Fahrzeugarchive;
+# Geprüft am 2026-10-11: Website-Demonstration mit Demo-Einführung, ohne Fahrzeugarchive;
 # lokale Medien und bestehende Crawler-Berechtigungen bleiben erhalten.
 # Rechtevorbehalt für Text und Data Mining nach § 44b Abs. 3 UrhG und
 # Art. 4 Abs. 3 Richtlinie (EU) 2019/790: Eine Nutzung der Inhalte für

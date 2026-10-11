@@ -2,9 +2,13 @@
 
 ## Purpose and scope
 
-This is an Astro website-design showcase for prospective clients, using the existing
-Die Oldtimermanufaktur presentation. It is a labelled development demonstration,
-not an approved production website. Keep work scoped to the user's request.
+This is an independent Astro website-design showcase for prospective clients,
+not a website for any real company. “Die Oldtimermanufaktur” is used solely as an
+example for the design demonstration. This project has no connection to or
+affiliation with Die Oldtimermanufaktur and does not represent the company.
+Do not imply company involvement, endorsement or approval in copy, metadata or
+JSON-LD. It is a labelled development demonstration, not an approved production
+website. Keep work scoped to the user's request.
 
 Retained German routes are `/`, `/handwerk/`, `/ueber-uns/`, `/projekte/`,
 `/impressum/`, `/datenschutz/` and `/404.html`, with corresponding English pages.
