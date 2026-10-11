@@ -7,7 +7,7 @@ import sharp from 'sharp';
 import { verifyDeploymentArtifacts } from './lib/deployment-artifacts.mjs';
 
 const pages = process.argv[2] === 'github-pages';
-const base = pages ? '/oldtimer/' : '/';
+const base = pages ? '/reference/' : '/';
 const origin = pages ? 'https://bennetze.github.io' : 'https://www.oldtimermanufaktur.de';
 const root = join(process.cwd(), 'dist');
 await verifyDeploymentArtifacts(root, { removeOsMetadata: true });
@@ -21,12 +21,16 @@ async function collect(dir) {
 }
 await collect(root);
 const expected = ['404.html', 'index.html', 'handwerk/index.html', 'ueber-uns/index.html', 'projekte/index.html', 'impressum/index.html', 'datenschutz/index.html'];
-assert.deepEqual(files.map(file => file.slice(root.length + 1)).sort(), [...expected, ...expected.map(path => path === '404.html' ? 'en/404/index.html' : `en/${path}`)].sort(), 'Only retained showcase routes may be published.');
+assert.deepEqual(files.map(file => file.slice(root.length + 1)).sort(), expected.sort(), 'Only retained showcase routes may be published.');
 const imageCache = new Map();
 const sitemap = load(await readFile(join(root, 'sitemap.xml'), 'utf8'), { xmlMode: true });
 const dates = new Map(sitemap('url').toArray().map((node) => [sitemap(node).find('loc').text(), sitemap(node).find('lastmod').text()]));
 for (const file of files) {
 	const $ = load(await readFile(file, 'utf8'));
+	assert.equal($('html').attr('lang'), 'de', `${file}: German document`);
+	assert.equal($('meta[property="og:locale"]').attr('content'), 'de_DE');
+	assert.equal($('[data-language],.language-switch,link[hreflang]').length, 0, `${file}: no language controls or alternates`);
+	assert.equal($('a[href*="?lang="],a[href*="&lang="]').length, 0, `${file}: no language query parameters`);
 	const ids = new Set();
 	$('[id]').each((_, element) => {
 		const id = $(element).attr('id');
@@ -93,6 +97,8 @@ for (const file of files) {
 	if (indexable) {
 		assert.equal($('link[rel="canonical"]').attr('href'), ogUrl);
 		const json = JSON.parse($('script[type="application/ld+json"]').text());
+		for (const node of json['@graph'].filter(node => node.inLanguage)) assert.equal(node.inLanguage, 'de-DE');
+		assert.ok(!JSON.stringify(json).includes('__authored'));
 		const page = json['@graph'].find((node) => node['@id'] === `${ogUrl}#webpage`);
 		assert.equal(page.dateModified, dates.get(ogUrl), `${file}: sitemap/JSON-LD date mismatch`);
 		assert.equal($('meta[name="date"]').attr('content'), page.dateModified);

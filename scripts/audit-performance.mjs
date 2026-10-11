@@ -12,7 +12,7 @@ const records = [];
 let cacheMode = 'cold';
 const suites = new Map();
 const types = { '.html':'text/html; charset=utf-8', '.js':'text/javascript', '.css':'text/css', '.woff2':'font/woff2', '.webp':'image/webp', '.jpg':'image/jpeg', '.png':'image/png', '.avif':'image/avif', '.svg':'image/svg+xml', '.mp4':'video/mp4', '.webm':'video/webm' };
-const routes = ['/', '/handwerk/', '/ueber-uns/', '/projekte/', '/impressum/', '/datenschutz/', '/404.html', '/en/', '/en/handwerk/', '/en/ueber-uns/', '/en/projekte/'];
+const routes = ['/', '/handwerk/', '/ueber-uns/', '/projekte/', '/impressum/', '/datenschutz/', '/404.html'];
 const median = values => { const sorted=values.filter(Number.isFinite).sort((a,b)=>a-b); return sorted.length ? sorted[Math.floor(sorted.length/2)] : null; };
 function summary() {
  const groups = new Map();
@@ -61,8 +61,8 @@ createServer(async(req,res)=>{
  const suite=randomUUID();suites.set(suite,schedule);
  res.setHeader('Content-Type','text/html; charset=utf-8');res.end(`<h1>Local performance audit</h1><p>Set the browser viewport to 1440 × 900 or 390 × 844. Each scenario takes six seconds. Warm samples follow an excluded priming visit. Unsupported metrics are null. Transfer totals exclude requests still in flight.</p><a href="/__performance/run?index=0&suite=${suite}">Start ${schedule.length} visits</a>`);return;
  }
- // Instrumented navigation retains the real route, so links/localization work normally.
- if(script){const target=new URL(pathname,url.origin);target.searchParams.set('lang',pathname.includes('/en/')?'en':'de');target.searchParams.set('__perf',`${url.searchParams.get('suite')}:${url.searchParams.get('index')}`);res.writeHead(302,{Location:target.pathname+target.search});pending.set(target.pathname+target.search,script);res.end();return;}
+ // Instrumented navigation retains the real route, so links work normally.
+ if(script){const target=new URL(pathname,url.origin);target.searchParams.set('__perf',`${url.searchParams.get('suite')}:${url.searchParams.get('index')}`);res.writeHead(302,{Location:target.pathname+target.search});pending.set(target.pathname+target.search,script);res.end();return;}
  const relative=base&&pathname.startsWith(base+'/')?pathname.slice(base.length):pathname;
  const file=resolve(root,'.'+decodeURIComponent(relative)+(relative.endsWith('/')?'index.html':''));
  if(!file.startsWith(root+sep))throw new Error('Invalid path');

@@ -1,6 +1,6 @@
 # Die Oldtimermanufaktur — Website-Demonstration
 
-> Zweisprachige Website-Demonstration für die Präsentation von Webdesign gegenüber potenziellen Auftraggebern. Die Darstellung der Oldtimermanufaktur bleibt eine gekennzeichnete Entwicklungsvorschau und ist keine freigegebene Produktionswebsite.
+> Deutschsprachige Website-Demonstration für die Präsentation von Webdesign gegenüber potenziellen Auftraggebern. Die Darstellung der Oldtimermanufaktur bleibt eine gekennzeichnete Entwicklungsvorschau und ist keine freigegebene Produktionswebsite.
 
 ## Seiten
 
@@ -9,18 +9,13 @@
 - [Wir Über Uns](https://www.oldtimermanufaktur.de/ueber-uns/): Vorstellung von Mario Schrank, Anton Schrank und dem Team sowie vorhandene Kontaktinformationen und eine Standortdarstellung für Fischbach/Rhön.
 - [Unsere Projekte](https://www.oldtimermanufaktur.de/projekte/): Drei fotografische Bildfelder für aktuelle Projekte, abgeschlossene Projekte und Fahrzeugangebote. Die Bildfelder dienen ausschließlich der gestalterischen Präsentation und verlinken keine Archive oder Fahrzeugdokumentationen.
 
-## Englische Seiten
-
-- [English homepage](https://www.oldtimermanufaktur.de/en/): Englische Fassung der Website-Demonstration mit denselben lokalen Medien und gemeinsamen Interaktionen.
-- [Our Craftsmanship](https://www.oldtimermanufaktur.de/en/handwerk/): Englische Fassung der handwerklichen Einblicke.
-- [Who We Are](https://www.oldtimermanufaktur.de/en/ueber-uns/): Englische Unternehmens- und Teamdarstellung.
-- [Our Projects](https://www.oldtimermanufaktur.de/en/projekte/): Englische Fassung der nicht verlinkten fotografischen Projektübersicht.
-
 ## Darstellung und Vorschau
+
+Geprüft am 11. Oktober 2026: Die gemeinsame Bewegungseinstellung steuert auch das Scroll-Parallax der redaktionellen Seiten. Lokale Vorschauen berücksichtigen die jeweilige Deployment-Basis; die GitHub-Pages-Vorschau liegt unter `/reference/`.
 
 Die Website verwendet die lokal bereitgestellte Schrift Jost und ein SVG-Zeichen über dem Firmennamen in einer feststehenden Kopfzeile. Dasselbe SVG-Zeichen dient als Favicon. Überschriften mit mittlerer Schriftstärke und größere Fließtexte prägen die Typografie; die Abstände zwischen redaktionellen Abschnitten lassen dosierten Freiraum. Redaktionelle Hintergründe verlaufen von Weiß über Creme und Blau zurück zu Weiß; Ledertexturen und dekoratives Rauschen sind entfernt. Impressum und Datenschutz enthalten ausschließlich ihre Überschriften und die gemeinsame Seitennavigation und werden nicht indexiert.
 
-Die Filme werden ohne Ton abgespielt. Ein zugänglicher Bewegungsschalter im Menü steuert Filme und Parallax gemeinsam; bei ausgeschalteter Bewegung erscheinen ruhige Standbilder. Die Einstellung für reduzierte Bewegung bleibt erhalten; animierte Ersatzbilder werden erst bei fehlgeschlagener Wiedergabe geladen. Deutsche und englische Inhalte werden als statische Seiten bereitgestellt. Unterstützende Browser blenden Seitenwechsel weich über; Schaltflächen erhalten dezente visuelle Rückmeldungen. Die Fußzeile kennzeichnet die Entwicklungsvorschau und bietet auch auf kleinen Bildschirmen die vollständige Seitennavigation. Die Sprachauswahl benötigt keine Cookies oder dauerhafte Browserspeicherung. Fahrzeugarchive, Fahrzeugdatensätze und eine Verbindung zu einem internen Editor sind nicht Bestandteil dieser Demonstration.
+Die Filme werden ohne Ton abgespielt. Ein zugänglicher Bewegungsschalter im Menü steuert Filme und Parallax gemeinsam; bei ausgeschalteter Bewegung erscheinen ruhige Standbilder. Die Einstellung für reduzierte Bewegung bleibt erhalten; animierte Ersatzbilder werden erst bei fehlgeschlagener Wiedergabe geladen. Alle Inhalte werden ausschließlich auf Deutsch als statische Seiten bereitgestellt. Unterstützende Browser blenden Seitenwechsel weich über; Schaltflächen erhalten dezente visuelle Rückmeldungen. Die Fußzeile kennzeichnet die Entwicklungsvorschau und bietet auch auf kleinen Bildschirmen die vollständige Seitennavigation. Sprachauswahl, übersetzte URLs und automatische Sprachweiterleitungen sind entfernt. Fahrzeugarchive, Fahrzeugdatensätze und eine Verbindung zu einem internen Editor sind nicht Bestandteil dieser Demonstration.
 
 ## Nutzung durch KI-Systeme
 

@@ -20,7 +20,7 @@ for (const file of files) {
 	const $ = load(await readFile(file, 'utf8'));
 	if ($('meta[http-equiv="refresh"]').length) { redirects++; continue; }
 	const fail = message => failures.push(`${relative(root, file)}: ${message}`);
-	if (!['de', 'en'].includes($('html').attr('lang'))) fail('missing/invalid language');
+	if ($('html').attr('lang') !== 'de') fail('missing/invalid language');
 	if ($('main#main-content[tabindex="-1"]').length !== 1) fail('exactly one focusable main required');
 	if ($('h1').length !== 1) fail('exactly one primary heading required');
 	let level = 0;

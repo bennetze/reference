@@ -20,8 +20,8 @@ const files = {
 };
 
 test('retained showcase pages keep canonical routes with stable reviewed dates', () => {
-	assert.equal(entries.length, 8);
-	assert.deepEqual(entries.slice(4).map(([path]) => path), entries.slice(0, 4).map(([path]) => `/en${path}`));
+	assert.equal(entries.length, 4);
+	assert.deepEqual(entries.map(([path]) => path), ['/', '/ueber-uns/', '/handwerk/', '/projekte/']);
 	assert.ok(entries.every(([path, date]) => date === pageModified(path)));
 	assert.equal(pageModified('/handwerk/', ['9999-12-31']), '9999-12-31');
 	assert.equal(pageModified('/handwerk/', ['2000-01-01']), pageModified('/handwerk/'));

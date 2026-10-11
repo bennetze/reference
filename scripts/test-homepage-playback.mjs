@@ -1,5 +1,5 @@
 // Local browser harness for the real built homepage, including its CSP.
-// Open /?lang=de&motion-test=normal (or reduce / blocked) in each browser.
+// Open /?motion-test=normal (or reduce / blocked) in each browser.
 // Keep the tested browser tab in the foreground throughout the run.
 // Results stay local; no analytics or production assets are changed.
 import { createServer } from 'node:http';
@@ -117,4 +117,4 @@ createServer(async (req, res) => {
 		}
 		res.setHeader('Content-Length', bytes.length); res.end(bytes);
 	} catch (error) { res.writeHead(400); res.end(error.message); }
-}).listen(port, '127.0.0.1', () => console.log(`Playback harness: http://localhost:${port}${base}/?lang=de&motion-test=normal — results: ${output}`));
+}).listen(port, '127.0.0.1', () => console.log(`Playback harness: http://localhost:${port}${base}/?motion-test=normal — results: ${output}`));

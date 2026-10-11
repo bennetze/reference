@@ -1,6 +1,5 @@
 ---
 import { companyLogo } from '../config/branding';
-import { languagePath } from '../i18n/language.js';
 import { siteStatus } from '../config/site';
 interface Props {
 	theme?: 'dark' | 'light';
@@ -22,7 +21,7 @@ const currentPath = (
 	deploymentBase && Astro.url.pathname.startsWith(deploymentBase)
 		? Astro.url.pathname.slice(deploymentBase.length)
 		: Astro.url.pathname
-).replace(/^\/en(?=\/|$)/, '').replace(/\/+$/, '') || '/';
+).replace(/\/+$/, '') || '/';
 const activeNavigationPath = currentPath;
 const sitePath = (path) => {
 	if (path === '/') {
@@ -53,10 +52,6 @@ const sitePath = (path) => {
 			<img class="brand-mark" src={companyLogo.src} width="2050" height="485" alt="" aria-hidden="true" draggable="false" />
 			<span>Die Oldtimermanufaktur</span>
 		</a>
-		<nav class="language-switch" aria-label="Sprache wählen">
-			<a href={`${languagePath(Astro.url.pathname, 'de', basePath)}?lang=de`} data-language="de" lang="de" hreflang="de" aria-label="Deutsch (DE)">DE</a>
-			<a href={`${languagePath(Astro.url.pathname, 'en', basePath)}?lang=en`} data-language="en" lang="en" hreflang="en" aria-label="English (EN)">EN</a>
-		</nav>
 	</header>
 
 	<div class="menu-overlay" id="site-menu" aria-hidden="true" inert style={`--last-item-index: ${navigationItems.length - 1}`}>
@@ -495,33 +490,6 @@ const sitePath = (path) => {
 </script>
 
 <style>
-	.language-switch {
-		display: flex;
-		justify-content: flex-end;
-		gap: 0.75rem;
-		font-size: clamp(0.75rem, 0.7rem + 0.15vw, 0.9rem);
-		letter-spacing: 0.06em;
-	}
-
-	.language-switch a {
-		color: inherit;
-		padding: 0.65rem 0.15rem;
-		text-decoration: none;
-		opacity: 0.6;
-	}
-
-	.language-switch a[aria-current="true"],
-	.language-switch a:hover {
-		opacity: 1;
-		text-decoration: underline;
-		text-underline-offset: 0.3rem;
-	}
-
-	.language-switch a:focus-visible {
-		outline: 1px solid currentColor;
-		outline-offset: 0.2rem;
-	}
-
 	:global(html),
 	:global(body),
 	.site-shell {
@@ -1074,12 +1042,9 @@ const sitePath = (path) => {
 		}
 
 		.site-shell--home .site-header {
-			grid-template-columns: 44px minmax(0, 1fr) 88px;
+			grid-template-columns: 44px minmax(0, 1fr) 44px;
 		}
 
-		.site-shell--home .language-switch {
-			flex-direction: row;
-		}
 
 		.brand {
 			gap: 0.2rem;
@@ -1104,7 +1069,7 @@ const sitePath = (path) => {
 		}
 
 		.site-header {
-			grid-template-columns: 44px minmax(0, 1fr) 88px;
+			grid-template-columns: 44px minmax(0, 1fr) 44px;
 			gap: 0.25rem;
 			padding: env(safe-area-inset-top, 0px) max(0.75rem, env(safe-area-inset-right, 0px)) 0 max(0.75rem, env(safe-area-inset-left, 0px));
 			background: rgba(16, 16, 16, 0.42);
@@ -1117,13 +1082,6 @@ const sitePath = (path) => {
 			padding: 0;
 		}
 
-		.language-switch a {
-			display: grid;
-			place-items: center;
-			min-width: 44px;
-			min-height: 44px;
-			padding: 0;
-		}
 
 		.menu-toggle span:last-child {
 			position: absolute;
@@ -1142,10 +1100,6 @@ const sitePath = (path) => {
 			line-height: 1.25;
 		}
 
-		.language-switch {
-			gap: 0;
-			font-size: 0.8rem;
-		}
 
 
 		.menu-panel {

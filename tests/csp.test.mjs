@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { load } from 'cheerio';
-import { finalizeCsp } from '../src/i18n/csp.js';
-test('CSP precedes resources and hashes localized scripts without altering attribute policy', () => {
-	const $ = load(`<html><head><meta charset="UTF-8"><script>const language = 'en';</script><link rel="stylesheet" href="/site.css"><meta http-equiv="content-security-policy" content="default-src 'self'; script-src-elem 'self'; script-src-attr 'none'"></head></html>`);
+import { finalizeCsp } from '../src/utils/csp.js';
+test('CSP precedes resources and hashes inline scripts without altering attribute policy', () => {
+	const $ = load(`<html><head><meta charset="UTF-8"><script>const ready = true;</script><link rel="stylesheet" href="/site.css"><meta http-equiv="content-security-policy" content="default-src 'self'; script-src-elem 'self'; script-src-attr 'none'"></head></html>`);
 	finalizeCsp($); finalizeCsp($);
 	const policy = $('head').children().eq(1);
 	assert.equal(policy.attr('http-equiv'), 'content-security-policy');

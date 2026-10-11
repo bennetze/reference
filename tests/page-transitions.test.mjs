@@ -7,7 +7,7 @@ function setup({ enabled = true, reduced = false, native = false } = {}) {
 	const handlers = {}, timers = new Map(), navigations = [];
 	const document = { documentElement: { dataset: { pageTransitions: native ? 'native' : 'fade' } }, body: { dataset: {} }, addEventListener: (name, listener) => handlers[name] = listener };
 	const window = { matchMedia: () => ({ matches: reduced }), addEventListener: (name, listener) => handlers[name] = listener,
-		location: { href: 'https://example.com/oldtimer/?lang=en', origin: 'https://example.com', protocol: 'https:', pathname: '/oldtimer/', search: '?lang=en', assign: url => navigations.push(url) },
+		location: { href: 'https://example.com/oldtimer/?view=detail', origin: 'https://example.com', protocol: 'https:', pathname: '/oldtimer/', search: '?view=detail', assign: url => navigations.push(url) },
 		clearTimeout: id => timers.delete(id), setTimeout: callback => { timers.set(1, callback); return 1; } };
 	class Element { constructor(link) { this.link = link; } closest() { return this.link; } }
 	vm.runInNewContext(source, { getSiteMotion: () => ({ enabled }), window, document, Element, URL });
@@ -15,8 +15,8 @@ function setup({ enabled = true, reduced = false, native = false } = {}) {
 		click(href, extra = {}, linkExtra = {}) { const event = { button: 0, target: new Element({ href, target: '', hasAttribute: () => false, ...linkExtra }), preventDefault() { this.defaultPrevented = true; }, ...extra }; handlers.click(event); return event; },
 		flush() { [...timers.values()].forEach(callback => callback()); }, restore() { handlers.pageshow(); } };
 }
-test('fallback dissolves an internal document navigation while preserving its base, language and fragment', () => {
-	const state = setup(); const target = 'https://example.com/oldtimer/en/handwerk/?lang=en#motorbau';
+test('fallback dissolves an internal document navigation while preserving its base, query and fragment', () => {
+	const state = setup(); const target = 'https://example.com/oldtimer/handwerk/?view=detail#motorbau';
 	assert.equal(state.click(target).defaultPrevented, true);
 	assert.equal(state.navigations.length, 0); state.flush();
 	assert.deepEqual(state.navigations, [target]);
@@ -31,7 +31,7 @@ test('native transitions, still mode and reduced motion keep immediate browser n
 test('fallback preserves modified clicks, anchors, downloads, external destinations and handled events', () => {
 	const state = setup();
 	for (const [href, event, link] of [
-		['https://example.com/oldtimer/?lang=en#handwerk', {}, {}],
+		['https://example.com/oldtimer/?view=detail#handwerk', {}, {}],
 		['https://elsewhere.com/', {}, {}], ['mailto:test@example.com', {}, {}],
 		['https://example.com/handwerk/', { ctrlKey: true }, {}],
 		['https://example.com/handwerk/', { button: 1 }, {}],

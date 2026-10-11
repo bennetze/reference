@@ -11,7 +11,7 @@ JSON-LD. It is a labelled development demonstration, not an approved production
 website. Keep work scoped to the user's request.
 
 Retained German routes are `/`, `/handwerk/`, `/ueber-uns/`, `/projekte/`,
-`/impressum/`, `/datenschutz/` and `/404.html`, with corresponding English pages.
+`/impressum/`, `/datenschutz/` and `/404.html`.
 The Projekte overview is a photographic triptych with noninteractive panels.
 Vehicle archives, records, galleries, search, redirects and editor integration have
 been removed. Do not reintroduce them or touch the sibling internal editor without
@@ -21,10 +21,9 @@ shared chrome; do not invent legal copy.
 ## Language and structure
 
 Collaborate in English unless the user asks otherwise. Author website copy in
-German and maintain its English dictionary entries in `src/i18n/en.json`.
-`src/i18n/routes.mjs` registers English versions of the shared Astro templates;
-middleware localizes text, internal links, metadata and JSON-LD and updates CSP hashes.
-Both languages must remain readable without JavaScript.
+German. The website is German-only: do not reintroduce translated routes,
+language switches, browser-language redirects or translation dictionaries.
+All pages must remain readable without JavaScript.
 
 Use existing `.astro` pages, components and layouts before adding new structure.
 Use PascalCase component filenames and lowercase route filenames. Keep imports at
@@ -89,8 +88,8 @@ absolute URLs respecting both deployment bases. Every page needs complete baseli
 Open Graph tags and meaningful image alternatives. Noindex pages have no canonical
 link or JSON-LD graph. Never invent business facts, prices, reviews or services.
 
-`public/sitemap.xml` lists only the four retained indexable routes and their English
-versions. Use reviewed dates in `src/config/modificationDates.js`, never the build
+`public/sitemap.xml` lists only the four retained German indexable routes.
+Use reviewed dates in `src/config/modificationDates.js`, never the build
 clock; advance the shared date for site-wide changes. After relevant changes run
 `npm run crawlers:sync` explicitly and review its diff. Ordinary builds validate
 crawler files without rewriting source. Maintain the concise German `public/llms.txt`
@@ -103,22 +102,23 @@ sitemap hostname and matching its policy to current routes and media.
 Run commands from the repository root with Node >=22.12.0 and npm >=11.18.0:
 
 - `npm ci`: install the reviewed lockfile.
-- `npm run dev`: start Astro, normally at localhost:4321.
+- `npm run dev`: validate both builds, publish the Pages preview to `bennetze/reference`'s `gh-pages` branch, then start Astro, normally at localhost:4321.
+- `npm run dev:local`: start Astro without building or publishing.
 - `npm test`: shared Node regression tests (`npm run test:site` is an alias).
 - `npm run crawlers:sync`: explicitly update the sitemap and validate manual crawler files.
 - `npm run crawlers:check`: validate without rewriting source.
 - `npm run build`: root-base production-format build with output checks.
-- `npm run build:pages`: `/oldtimer/` GitHub Pages preview build with noindex.
+- `npm run build:pages`: `/reference/` GitHub Pages preview build with noindex.
 - `npm run preview`: serve generated output.
 - `npm run security:check`: dependency audit and registry signature verification.
 
 For shared changes run npm test and both builds; confirm builds leave tracked
 source unchanged. Keep focused Node tests in `tests/` and verification scripts in
-`scripts/`. Preserve CSP, deployment-artifact, metadata, language, accessibility and
+`scripts/`. Preserve CSP, deployment-artifact, metadata, German-only output, accessibility and
 motion checks when simplifying tooling. Never edit node_modules or dist manually.
 
-For visual changes check retained pages and homepage around 1440px and 390px, both
-languages, short-screen menus, text wrapping, image crops, header clearance and
+For visual changes check retained pages and homepage around 1440px and 390px,
+short-screen menus, text wrapping, image crops, header clearance and
 focus. Check normal and reduced-motion playback, fallback races and absence of
 fallback requests during successful playback. Test CSP against built output, since
 dev mode does not enable Astro CSP. For interactions include Chromium, Safari and

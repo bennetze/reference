@@ -38,4 +38,4 @@ createServer(async (req, res) => {
 		}
 		res.setHeader('Content-Type', types[extname(path)] || 'application/octet-stream'); res.end(data);
 	} catch { res.writeHead(404); res.end('Not found'); }
-}).listen(4327, '127.0.0.1', () => console.log('Local accessibility fixtures: http://127.0.0.1:4327/?lang=de&audit=legacy (nojs, spacing, text, reduced, header, media)'));
+}).listen(4327, '127.0.0.1', () => console.log('Local accessibility fixtures: http://127.0.0.1:4327/?audit=legacy (nojs, spacing, text, reduced, header, media)'));

@@ -236,7 +236,7 @@ const openingId = sections[0]?.id;
 	}
 
 	window.addEventListener('scroll', () => {
-		if (!motionPreference.matches && !document.hidden && visibleGroups.size) requestParallaxUpdate();
+		if (motion.enabled && !document.hidden && visibleGroups.size) requestParallaxUpdate();
 	}, { passive: true });
 	const handlePageLoaded = () => {
 		updateStoryScrollOffset();
