@@ -59,8 +59,8 @@ Allow: /
 
 # Normale und bislang unbekannte Crawler dürfen die öffentlichen Seiten lesen.
 # Dies schließt die kanonischen Seiten unter /handwerk/, /ueber-uns/ sowie die
-# fotografische Übersicht unter /projekte/ sowie deren englische Fassungen
-# unter /en/ ein. Rechtliche Seiten und Fehlerseiten bleiben per Metadaten noindex.
+# fotografische Übersicht unter /projekte/ ein. Rechtliche Seiten und Fehlerseiten
+# bleiben per Metadaten noindex.
 # Der oben erklärte Rechtevorbehalt bleibt davon unberührt.
 User-agent: *
 Allow: /
